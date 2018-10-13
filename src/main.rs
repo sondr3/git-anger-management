@@ -4,16 +4,15 @@ use git2::Repository;
 use std::collections::HashMap;
 use std::env;
 
+static CURSES: &str = include_str!("words.txt");
+
 struct Author {
     name: String,
     curses: HashMap<String, usize>,
 }
 
 fn main() -> Result<(), Box<std::error::Error>> {
-    let curses = vec![
-        "arse", "ass", "asshole", "bitch", "balls", "bollock", "bugger", "cock", "cunt", "dick",
-        "fuck", "goddamn", "damn", "shit", "crap", "piss", "shit", "shite",
-    ];
+    let curses: Vec<&str> = CURSES.lines().collect();
     let path = env::current_dir()?;
     let repo = Repository::open(path)?;
     let mut occurrences: HashMap<String, usize> = HashMap::new();
