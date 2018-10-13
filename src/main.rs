@@ -4,6 +4,11 @@ use git2::Repository;
 use std::collections::HashMap;
 use std::env;
 
+struct Author {
+    name: String,
+    curses: HashMap<String, usize>,
+}
+
 fn main() -> Result<(), Box<std::error::Error>> {
     let curses = vec![
         "arse", "ass", "asshole", "bitch", "balls", "bollock", "bugger", "cock", "cunt", "dick",
