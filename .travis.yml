@@ -1,0 +1,42 @@
+language: rust
+sudo: false
+cache: cargo
+
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode10
+    - os: windows
+    - rust: stable
+    - rust: beta
+    - rust: nightly
+
+    - name: "Clippy"
+      rust: stable
+      before_script: rustup component add clippy-preview
+      script: cargo clippy --all --all-features -- -D clippy
+
+    - name: "rustfmt"
+      rust: stable
+      before_script: rustup component add rustfmt-preview
+      script: cargo fmt --all -- --check
+
+    - name: "warnings"
+      rust: stable
+      script: cargo check --tests --all-features
+
+    - name: "release"
+      rust: stable
+      script:
+        - cargo build --verbose --release
+        - cargo test --verbose --release
+        - cargo doc --verbose --release
+
+  allow_failures:
+    - rust: nightly
+  fast_finish: true
+
+script:
+- cargo build --verbose
+- cargo test --verbose
+- cargo doc --verbose
