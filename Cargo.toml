@@ -5,3 +5,4 @@ authors = ["Sondre Nilsen <nilsen.sondre@gmail.com>"]
 
 [dependencies]
 git2 = "0.7"
+structopt = "0.2"
