@@ -17,20 +17,17 @@ fn main() -> Result<(), Box<std::error::Error>> {
     let curses: Vec<&str> = CURSES.lines().collect();
     let path = env::current_dir()?;
     let repo = Repository::open(path)?;
-    let mut occurrences: HashMap<String, usize> = HashMap::new();
+    let mut occurrences: HashMap<&str, usize> = HashMap::new();
     for curse in &curses {
-        occurrences.entry(curse.to_string()).or_insert(0);
+        occurrences.entry(curse).or_insert(0);
     }
     for word in "this is a fucking shit sentence with no goddamn shite in it".split_whitespace() {
         if naughty_word(&word, &curses) {
-            occurrences.entry(word.to_string()).and_modify(|i| *i += 1);
+            occurrences.entry(word).and_modify(|i| *i += 1);
         }
     }
     println!("{:?}", repo.workdir());
-    let occurrences: HashMap<String, usize> = occurrences
-        .into_iter()
-        .filter(|&(_, val)| val > 0)
-        .collect();
+    filter_occurrences(&mut occurrences);
     println!("{:#?}", occurrences);
     Ok(())
 }
@@ -40,6 +37,10 @@ fn naughty_word(word: &str, naughty_list: &[&str]) -> bool {
         return true;
     }
     false
+}
+
+fn filter_occurrences(map: &mut HashMap<&str, usize>) {
+    map.retain(|_, val| val > &mut 0);
 }
 
 #[cfg(test)]
