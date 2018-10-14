@@ -1,4 +1,5 @@
 #![cfg_attr(feature = "fail-on-warnings", deny(warnings))]
+#![forbid(unsafe_code)]
 extern crate git2;
 
 use git2::Repository;
