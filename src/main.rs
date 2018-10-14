@@ -21,8 +21,8 @@ fn main() -> Result<(), Box<std::error::Error>> {
     for curse in &curses {
         occurrences.entry(curse.to_string()).or_insert(0);
     }
-    for word in "this is a fucking shit sentence with no goddamn shite in it".split(' ') {
-        if curses.contains(&word) {
+    for word in "this is a fucking shit sentence with no goddamn shite in it".split_whitespace() {
+        if naughty_word(&word, &curses) {
             occurrences.entry(word.to_string()).and_modify(|i| *i += 1);
         }
     }
@@ -33,4 +33,11 @@ fn main() -> Result<(), Box<std::error::Error>> {
         .collect();
     println!("{:#?}", occurrences);
     Ok(())
+}
+
+fn naughty_word(word: &str, naughty_list: &Vec<&str>) -> bool {
+    if naughty_list.contains(&word) {
+        return true;
+    }
+    false
 }
