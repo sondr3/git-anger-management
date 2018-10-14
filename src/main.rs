@@ -5,6 +5,7 @@ extern crate git2;
 use git2::Repository;
 use std::collections::HashMap;
 use std::env;
+use std::error::Error;
 
 static CURSES: &str = include_str!("words.txt");
 
@@ -13,7 +14,7 @@ static CURSES: &str = include_str!("words.txt");
 //    curses: HashMap<String, usize>,
 //}
 
-fn main() -> Result<(), Box<std::error::Error>> {
+fn main() -> Result<(), Box<Error>> {
     let curses: Vec<&str> = CURSES.lines().collect();
     let path = env::current_dir()?;
     let repo = Repository::open(path)?;
@@ -25,6 +26,10 @@ fn main() -> Result<(), Box<std::error::Error>> {
     filter_occurrences(&mut occurrences);
     println!("{:#?}", occurrences);
     Ok(())
+}
+
+fn update_occurrence<'a>(word: &'a str, map: &mut HashMap<&'a str, usize>) {
+    map.entry(word).and_modify(|i| *i += 1);
 }
 
 fn naughty_word(word: &str, naughty_list: &[&str]) -> bool {
@@ -51,6 +56,21 @@ mod test {
     }
 
     #[test]
+    fn test_update_occurrences() {
+        let curses: Vec<&str> = CURSES.lines().collect();
+        let mut occurrences: HashMap<&str, usize> = HashMap::new();
+        for curse in &curses {
+            occurrences.entry(curse).or_insert(0);
+        }
+        update_occurrence("boobs", &mut occurrences);
+        update_occurrence("crap", &mut occurrences);
+        update_occurrence("boobs", &mut occurrences);
+
+        assert_eq!(2, occurrences.remove("boobs").unwrap());
+        assert_eq!(1, occurrences.remove("crap").unwrap());
+    }
+
+    #[test]
     fn test_filter_occurrences() {
         let curses: Vec<&str> = CURSES.lines().collect();
         let mut occurrences: HashMap<&str, usize> = HashMap::new();
@@ -65,7 +85,7 @@ mod test {
         for word in "this is a fucking shit sentence with no goddamn shite in it".split_whitespace()
         {
             if naughty_word(&word, &curses) {
-                occurrences.entry(word).and_modify(|i| *i += 1);
+                update_occurrence(word, &mut occurrences);
             }
         }
         filter_occurrences(&mut occurrences);
