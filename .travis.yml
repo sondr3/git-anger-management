@@ -3,10 +3,12 @@ sudo: false
 cache: cargo
 
 matrix:
-  include:
-    - os: osx
-      osx_image: xcode10
+  allow_failures:
+    - rust: nightly
     - os: windows
+  fast_finish: true
+
+  include:
     - rust: stable
     - rust: beta
     - rust: nightly
@@ -32,9 +34,9 @@ matrix:
         - cargo test --verbose --all --release
         - cargo doc --verbose --all --release
 
-  allow_failures:
-    - rust: nightly
-  fast_finish: true
+    - os: osx
+      osx_image: xcode10
+    - os: windows
 
 script:
 - cargo build --all --verbose
