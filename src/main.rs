@@ -33,10 +33,7 @@ fn update_occurrence<'a>(word: &'a str, map: &mut HashMap<&'a str, usize>) {
 }
 
 fn naughty_word(word: &str, naughty_list: &[&str]) -> bool {
-    if naughty_list.contains(&word) {
-        return true;
-    }
-    false
+    naughty_list.contains(&word)
 }
 
 fn filter_occurrences(map: &mut HashMap<&str, usize>) {
