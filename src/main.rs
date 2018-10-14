@@ -35,9 +35,22 @@ fn main() -> Result<(), Box<std::error::Error>> {
     Ok(())
 }
 
-fn naughty_word(word: &str, naughty_list: &Vec<&str>) -> bool {
+fn naughty_word(word: &str, naughty_list: &[&str]) -> bool {
     if naughty_list.contains(&word) {
         return true;
     }
     false
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_naughty_words() {
+        let curses: Vec<&str> = CURSES.lines().collect();
+        assert!(naughty_word("fuck", &curses));
+        assert!(naughty_word("cyberfuckers", &curses));
+        assert!(!naughty_word("pretty", &curses));
+    }
 }
