@@ -21,11 +21,6 @@ fn main() -> Result<(), Box<std::error::Error>> {
     for curse in &curses {
         occurrences.entry(curse).or_insert(0);
     }
-    for word in "this is a fucking shit sentence with no goddamn shite in it".split_whitespace() {
-        if naughty_word(&word, &curses) {
-            occurrences.entry(word).and_modify(|i| *i += 1);
-        }
-    }
     println!("{:?}", repo.workdir());
     filter_occurrences(&mut occurrences);
     println!("{:#?}", occurrences);
@@ -53,5 +48,27 @@ mod test {
         assert!(naughty_word("fuck", &curses));
         assert!(naughty_word("cyberfuckers", &curses));
         assert!(!naughty_word("pretty", &curses));
+    }
+
+    #[test]
+    fn test_filter_occurrences() {
+        let curses: Vec<&str> = CURSES.lines().collect();
+        let mut occurrences: HashMap<&str, usize> = HashMap::new();
+        let actual: HashMap<&str, usize> =
+            [("shite", 1), ("goddamn", 1), ("shit", 1), ("fucking", 1)]
+                .iter()
+                .cloned()
+                .collect();
+        for curse in &curses {
+            occurrences.entry(curse).or_insert(0);
+        }
+        for word in "this is a fucking shit sentence with no goddamn shite in it".split_whitespace()
+        {
+            if naughty_word(&word, &curses) {
+                occurrences.entry(word).and_modify(|i| *i += 1);
+            }
+        }
+        filter_occurrences(&mut occurrences);
+        assert_eq!(actual, occurrences);
     }
 }
