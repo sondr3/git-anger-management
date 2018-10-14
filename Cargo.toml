@@ -1,7 +1,20 @@
 [package]
-name = "git-fuck"
+name = "git-anger-management"
 version = "0.1.0"
 authors = ["Sondre Nilsen <nilsen.sondre@gmail.com>"]
+homepage = "https://github.com/sondr3/git-anger-management"
+description = "Count your naughty words in git commit messages"
+repository = "https://github.com/sondr3/git-anger-management"
+documentation = "https://github.com/sondr3/git-anger-management"
+readme = "README.md"
+license = "GPL-3.0-or-later"
+
+[badges]
+travis-ci = { repository = "sondr3/git-anger-management" }
+
+[[bin]]
+name = "git-anger-management"
+path = "src/main.rs"
 
 [features]
 fail-on-warnings = []

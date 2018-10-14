@@ -8,10 +8,10 @@ use std::env;
 
 static CURSES: &str = include_str!("words.txt");
 
-struct Author {
-    name: String,
-    curses: HashMap<String, usize>,
-}
+//struct Author {
+//    name: String,
+//    curses: HashMap<String, usize>,
+//}
 
 fn main() -> Result<(), Box<std::error::Error>> {
     let curses: Vec<&str> = CURSES.lines().collect();
