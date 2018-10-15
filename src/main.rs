@@ -38,7 +38,7 @@ impl Author {
     }
 
     fn filter_occurrences(&mut self) {
-        self.curses.retain(|_, val| val > &mut 0);
+        self.curses.retain(|_, val| *val > 0);
     }
 
     fn is_not_naughty(&self) -> bool {
@@ -59,16 +59,17 @@ fn main() -> Result<(), Box<Error>> {
     }
     let mut authors: Vec<Author> = find_authors(&commits);
     for commit in &commits {
-        let text = commit.message_raw().unwrap().to_lowercase().to_string();
+        let text = commit.message().unwrap().to_lowercase().to_string();
         let author = commit.author().name().unwrap().to_string();
         let index = authors
             .iter()
             .position(|i| i.name == author)
             .expect("Could not find author");
-        let mut author = authors.get_mut(index).unwrap();
+        let mut author = &mut authors[index];
         for word in text.split_whitespace() {
-            if naughty_word(word, &curses) {
-                author.update_occurrence(word);
+            let word = clean_word(word);
+            if naughty_word(word.as_str(), &curses) {
+                author.update_occurrence(word.as_str());
             }
         }
     }
