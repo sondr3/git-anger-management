@@ -1,14 +1,30 @@
 #![cfg_attr(feature = "fail-on-warnings", deny(warnings))]
 #![forbid(unsafe_code)]
 extern crate git2;
+#[macro_use]
+extern crate structopt;
 
 use git2::{Commit, Repository};
 use std::cmp::PartialEq;
 use std::collections::HashMap;
 use std::env;
+use std::path::PathBuf;
 use std::error::Error;
+use structopt::clap::AppSettings;
+use structopt::StructOpt;
 
 static CURSES: &str = include_str!("words.txt");
+
+#[derive(StructOpt, Debug)]
+#[structopt(
+    name = "git anger-management",
+    about = "Ever wondered how angry your commits are? Look no further...",
+    raw(global_settings = "&[AppSettings::ColoredHelp]")
+)]
+struct Cli {
+    #[structopt(name = "directory", help = "Directory to parse commits", parse(from_os_str))]
+    directory: Option<PathBuf>,
+}
 
 #[derive(Debug, Eq)]
 struct Author {
@@ -47,8 +63,14 @@ impl Author {
 }
 
 fn main() -> Result<(), Box<Error>> {
+    let opt = Cli::from_args();
     let curses: Vec<&str> = CURSES.lines().collect();
-    let path = env::current_dir()?;
+    let path;
+    if opt.directory.is_none() {
+        path = env::current_dir()?;
+    } else {
+        path = PathBuf::from(opt.directory.unwrap());
+    }
     let repo = Repository::open(path)?;
     let mut revwalk = repo.revwalk()?;
     let mut commits: Vec<Commit> = Vec::new();
