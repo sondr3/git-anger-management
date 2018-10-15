@@ -133,14 +133,16 @@ fn main() -> Result<(), Box<Error>> {
 
     let mut repo = Repo::new(repo_path.file_name().unwrap().to_str().unwrap());
     for commit in &commits {
-        let text = commit.message().unwrap().to_lowercase().to_string();
-        if let Some(author_name) = commit.author().name() {
+        if let (Some(author_name), Some(commit_message)) = (
+            commit.author().name(),
+            commit.message().map(|msg| msg.to_lowercase()),
+        ) {
             let mut total_curses_added = 0;
 
             {
                 let author = repo.author_for(author_name);
                 author.total_commits += 1;
-                for word in text.split_whitespace() {
+                for word in commit_message.split_whitespace() {
                     let word = clean_word(word);
                     if naughty_word(&word) {
                         author.total_curses += 1;
@@ -152,6 +154,11 @@ fn main() -> Result<(), Box<Error>> {
 
             repo.total_commits += 1;
             repo.total_curses += total_curses_added;
+        } else {
+            println!(
+                "Warning: skipping commit {:?} because author name OR commit message missing",
+                commit
+            );
         }
     }
 
