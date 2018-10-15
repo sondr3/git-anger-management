@@ -1,3 +1,14 @@
+## HEAD
+> 2018-10-15
+
+#### Changelog:
+* [[`7d63834b84`](https://github.com/sondr3/git-anger-management/commit/7d63834b84)] - Refactor author initialization
+* [[`d60bf41e32`](https://github.com/sondr3/git-anger-management/commit/d60bf41e32)] - Remove functions where you can directly update values
+* [[`6fabb676bb`](https://github.com/sondr3/git-anger-management/commit/6fabb676bb)] - We can just derive PartialEq, no need for our own implementation
+* [[`feb2db45c3`](https://github.com/sondr3/git-anger-management/commit/feb2db45c3)] - Add a struct for the repo being counted
+* [[`585f7a1674`](https://github.com/sondr3/git-anger-management/commit/585f7a1674)] - Fix wrong ordering on counting commits
+* [[`1ca19cbf2d`](https://github.com/sondr3/git-anger-management/commit/1ca19cbf2d)] - Implement Display for Author, add counters for commits/curses
+
 ## 0.3.0
 > 2018-10-15
 

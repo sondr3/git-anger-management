@@ -24,13 +24,14 @@ Output should look something like this:
 
 ```sh
 $ git anger-management
-Sondre Nilsen
+repo: (32/512) naughty commits/commits
+Sondre Nilsen: (32/438) naughty commits/commits
 {
     "goddamn": 1,
-    "shit": 5,
+    "fuck": 12,
     "fucking": 13,
-    "tits": 1,
-    "fuck": 12
+    "shit": 5,
+    "tits": 1
 }
 ```
 
@@ -38,12 +39,13 @@ You can also point it to other directories if you want to look somwhere else
 but you're too lazy to actually `cd` into that directory:
 
 ```sh
-$ git anger-management ../../kattis/
-Sondre Nilsen
+$ git anger-management ../../other-repo/
+other-repo: (3/56) naughty commits/commits
+Sondre Nilsen: (3/56) naughty commits/commits
 {
+    "goddamn": 1,
     "fucking": 1,
-    "fuck": 1,
-    "goddamn": 1
+    "fuck": 1
 }
 ```
 
