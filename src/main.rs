@@ -79,29 +79,25 @@ impl fmt::Display for Author {
 impl Author {
     fn new(name: &str) -> Self {
         let name = name.to_string();
-        let curses: Vec<&str> = CURSES.lines().collect();
-        let mut map: HashMap<String, usize> = HashMap::new();
-        for curse in curses {
-            map.insert(curse.to_string(), 0);
-        }
+        let curses: HashMap<String, usize> = HashMap::new();
         Author {
             name,
-            curses: map,
+            curses,
             total_commits: 0,
             total_curses: 0,
         }
     }
 
     fn update_occurrence(&mut self, curse: &str) {
-        self.curses.entry(curse.to_string()).and_modify(|i| *i += 1);
+        if !self.curses.contains_key(curse) {
+            self.curses.insert(curse.to_string(), 1);
+        } else {
+            self.curses.entry(curse.to_string()).and_modify(|i| *i += 1);
+        }
     }
 
-    fn filter_occurrences(&mut self) {
-        self.curses.retain(|_, val| *val > 0);
-    }
-
-    fn is_not_naughty(&self) -> bool {
-        self.curses.is_empty()
+    fn is_naughty(&self) -> bool {
+        !self.curses.is_empty()
     }
 }
 
@@ -144,8 +140,7 @@ fn main() -> Result<(), Box<Error>> {
     }
     println!("{}", repo);
     for mut author in authors {
-        author.filter_occurrences();
-        if !author.is_not_naughty() {
+        if author.is_naughty() {
             println!("{}", author);
         }
     }
