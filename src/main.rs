@@ -106,22 +106,30 @@ impl Author {
 }
 
 fn main() -> Result<(), Box<Error>> {
-    let opt = Cli::from_args();
     let curses: Vec<&str> = CURSES.lines().collect();
-    let path = if opt.directory.is_none() {
-        env::current_dir()?
-    } else {
-        opt.directory.unwrap()
+
+    let repo_path = {
+        let opt = Cli::from_args();
+        if let Some(directory) = opt.directory {
+            directory
+        } else {
+            env::current_dir()?
+        }
     };
-    let repo = Repository::open(&path)?;
-    let mut revwalk = repo.revwalk()?;
-    let mut commits: Vec<Commit> = Vec::new();
-    revwalk.push_head()?;
-    for commit_id in revwalk {
-        let commit = repo.find_commit(commit_id?)?;
-        commits.push(commit);
-    }
-    let mut repo = Repo::new(path.file_name().unwrap().to_str().unwrap());
+
+    let repo = Repository::open(&repo_path)?;
+    let commits = {
+        let mut revwalk = repo.revwalk()?;
+        let mut commits = Vec::new();
+        revwalk.push_head()?;
+        for commit_id in revwalk {
+            let commit = repo.find_commit(commit_id?)?;
+            commits.push(commit);
+        }
+        commits
+    };
+
+    let mut repo = Repo::new(repo_path.file_name().unwrap().to_str().unwrap());
     for commit in &commits {
         let text = commit.message().unwrap().to_lowercase().to_string();
         if let Some(author_name) = commit.author().name() {
@@ -144,6 +152,7 @@ fn main() -> Result<(), Box<Error>> {
             repo.total_curses += total_curses_added;
         }
     }
+
     println!("{}", repo);
     for mut author in repo.authors.values() {
         if author.is_naughty() {
