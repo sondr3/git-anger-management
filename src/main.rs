@@ -83,6 +83,22 @@ fn main() -> Result<(), Box<Error>> {
     Ok(())
 }
 
+fn clean_word(word: &str) -> String {
+    let mut res = String::with_capacity(word.len());
+    for b in word.chars() {
+        match b {
+            '!' => {}
+            '?' => {}
+            ':' => {}
+            ';' => {}
+            '.' => {}
+            ',' => {}
+            _ => res.push(b),
+        }
+    }
+    res
+}
+
 fn find_authors(commits: &[Commit]) -> Vec<Author> {
     let mut names: Vec<String> = Vec::new();
     let mut res: Vec<Author> = Vec::new();
@@ -110,5 +126,15 @@ mod test {
         assert!(naughty_word("fuck", &curses));
         assert!(naughty_word("cyberfuckers", &curses));
         assert!(!naughty_word("pretty", &curses));
+    }
+
+    #[test]
+    fn test_clean_word() {
+        let w1 = "This! is a string: with, some. words in? it;".to_string();
+        let w1 = clean_word(w1.as_str());
+        assert_eq!(
+            "This is a string with some words in it",
+            w1.trim().to_string()
+        );
     }
 }
