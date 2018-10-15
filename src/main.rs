@@ -31,6 +31,42 @@ struct Cli {
     directory: Option<PathBuf>,
 }
 
+#[derive(Debug)]
+struct Repo {
+    name: String,
+    total_commits: usize,
+    total_curses: usize,
+}
+
+impl fmt::Display for Repo {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "{}: ({}/{}) naughty commits/commits",
+            self.name, self.total_curses, self.total_commits
+        )
+    }
+}
+
+impl Repo {
+    fn new(name: &str) -> Self {
+        let name = name.to_string();
+        Repo {
+            name,
+            total_commits: 0,
+            total_curses: 0,
+        }
+    }
+
+    fn naughty_commit(&mut self) {
+        self.total_curses += 1;
+    }
+
+    fn normal_commit(&mut self) {
+        self.total_commits += 1;
+    }
+}
+
 #[derive(Debug, Eq)]
 struct Author {
     name: String,
@@ -100,7 +136,7 @@ fn main() -> Result<(), Box<Error>> {
     } else {
         opt.directory.unwrap()
     };
-    let repo = Repository::open(path)?;
+    let repo = Repository::open(&path)?;
     let mut revwalk = repo.revwalk()?;
     let mut commits: Vec<Commit> = Vec::new();
     revwalk.push_head()?;
@@ -108,6 +144,7 @@ fn main() -> Result<(), Box<Error>> {
         let commit = repo.find_commit(commit?)?;
         commits.push(commit);
     }
+    let mut repo = Repo::new(path.file_name().unwrap().to_str().unwrap());
     let mut authors: Vec<Author> = find_authors(&commits);
     for commit in &commits {
         let text = commit.message().unwrap().to_lowercase().to_string();
@@ -118,14 +155,17 @@ fn main() -> Result<(), Box<Error>> {
             .expect("Could not find author");
         let mut author = &mut authors[index];
         author.did_a_commit();
+        repo.normal_commit();
         for word in text.split_whitespace() {
             let word = clean_word(word);
             if naughty_word(word.as_str(), &curses) {
                 author.did_a_naughty();
+                repo.naughty_commit();
                 author.update_occurrence(word.as_str());
             }
         }
     }
+    println!("{}", repo);
     for mut author in authors {
         author.filter_occurrences();
         if !author.is_not_naughty() {
