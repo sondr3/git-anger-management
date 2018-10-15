@@ -1,6 +1,6 @@
 [package]
 name = "git-anger-management"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Sondre Nilsen <nilsen.sondre@gmail.com>"]
 homepage = "https://github.com/sondr3/git-anger-management"
 description = "Count your naughty words in git commit messages"
@@ -21,4 +21,3 @@ fail-on-warnings = []
 
 [dependencies]
 git2 = "0.7"
-structopt = "0.2"
