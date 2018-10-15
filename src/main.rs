@@ -35,6 +35,7 @@ struct Repo {
     name: String,
     total_commits: usize,
     total_curses: usize,
+    authors: HashMap<String, Author>,
 }
 
 impl fmt::Display for Repo {
@@ -48,13 +49,22 @@ impl fmt::Display for Repo {
 }
 
 impl Repo {
-    fn new(name: &str) -> Self {
-        let name = name.to_string();
+    fn new(name: impl Into<String>) -> Self {
         Repo {
-            name,
+            name: name.into(),
             total_commits: 0,
             total_curses: 0,
+            authors: HashMap::new(),
         }
+    }
+
+    fn author_for(&mut self, author_name: &str) -> &mut Author {
+        if !self.authors.contains_key(author_name) {
+            self.authors
+                .insert(author_name.to_owned(), Author::new(author_name));
+        }
+
+        self.authors.get_mut(author_name).expect("exists")
     }
 }
 
@@ -77,23 +87,17 @@ impl fmt::Display for Author {
 }
 
 impl Author {
-    fn new(name: &str) -> Self {
-        let name = name.to_string();
-        let curses: HashMap<String, usize> = HashMap::new();
+    fn new(name: impl Into<String>) -> Self {
         Author {
-            name,
-            curses,
+            name: name.into(),
+            curses: HashMap::new(),
             total_commits: 0,
             total_curses: 0,
         }
     }
 
-    fn update_occurrence(&mut self, curse: &str) {
-        if !self.curses.contains_key(curse) {
-            self.curses.insert(curse.to_string(), 1);
-        } else {
-            self.curses.entry(curse.to_string()).and_modify(|i| *i += 1);
-        }
+    fn update_occurrence(&mut self, curse: String) {
+        *self.curses.entry(curse).or_insert(0) += 1;
     }
 
     fn is_naughty(&self) -> bool {
@@ -118,28 +122,30 @@ fn main() -> Result<(), Box<Error>> {
         commits.push(commit);
     }
     let mut repo = Repo::new(path.file_name().unwrap().to_str().unwrap());
-    let mut authors: Vec<Author> = find_authors(&commits);
     for commit in &commits {
         let text = commit.message().unwrap().to_lowercase().to_string();
-        let author = commit.author().name().unwrap().to_string();
-        let index = authors
-            .iter()
-            .position(|i| i.name == author)
-            .expect("Could not find author");
-        let mut author = &mut authors[index];
-        author.total_commits += 1;
-        repo.total_commits += 1;
-        for word in text.split_whitespace() {
-            let word = clean_word(word);
-            if naughty_word(word.as_str(), &curses) {
-                author.total_curses += 1;
-                repo.total_curses += 1;
-                author.update_occurrence(word.as_str());
+        if let Some(author_name) = commit.author().name() {
+            let mut total_curses_added = 0;
+
+            {
+                let author = repo.author_for(author_name);
+                author.total_commits += 1;
+                for word in text.split_whitespace() {
+                    let word = clean_word(word);
+                    if naughty_word(&word, &curses) {
+                        author.total_curses += 1;
+                        total_curses_added += 1;
+                        author.update_occurrence(word);
+                    }
+                }
             }
+
+            repo.total_commits += 1;
+            repo.total_curses += total_curses_added;
         }
     }
     println!("{}", repo);
-    for mut author in authors {
+    for mut author in repo.authors.values() {
         if author.is_naughty() {
             println!("{}", author);
         }
@@ -159,19 +165,6 @@ fn clean_word(word: &str) -> String {
             ',' => {}
             _ => res.push(b),
         }
-    }
-    res
-}
-
-fn find_authors(commits: &[Commit]) -> Vec<Author> {
-    let mut names: Vec<String> = Vec::new();
-    let mut res: Vec<Author> = Vec::new();
-    for commit in commits {
-        let name = commit.author().name().unwrap().to_string();
-        if !names.contains(&name) {
-            res.push(Author::new(name.as_str()));
-        }
-        names.push(name);
     }
     res
 }
