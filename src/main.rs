@@ -117,8 +117,8 @@ fn main() -> Result<(), Box<Error>> {
     let mut revwalk = repo.revwalk()?;
     let mut commits: Vec<Commit> = Vec::new();
     revwalk.push_head()?;
-    for commit in revwalk {
-        let commit = repo.find_commit(commit?)?;
+    for commit_id in revwalk {
+        let commit = repo.find_commit(commit_id?)?;
         commits.push(commit);
     }
     let mut repo = Repo::new(path.file_name().unwrap().to_str().unwrap());
