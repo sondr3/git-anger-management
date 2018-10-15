@@ -5,10 +5,11 @@ extern crate git2;
 extern crate structopt;
 
 use git2::{Commit, Repository};
-use std::cmp::PartialEq;
+use std::cmp;
 use std::collections::HashMap;
 use std::env;
 use std::error::Error;
+use std::fmt;
 use std::path::PathBuf;
 use structopt::clap::AppSettings;
 use structopt::StructOpt;
@@ -33,10 +34,22 @@ struct Cli {
 #[derive(Debug, Eq)]
 struct Author {
     name: String,
+    total_commits: usize,
+    total_curses: usize,
     curses: HashMap<String, usize>,
 }
 
-impl PartialEq for Author {
+impl fmt::Display for Author {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "{}: ({}/{}) commits/naughty commits\n{:#?}",
+            self.name, self.total_curses, self.total_commits, self.curses
+        )
+    }
+}
+
+impl cmp::PartialEq for Author {
     fn eq(&self, other: &Author) -> bool {
         self.name == other.name
     }
@@ -50,7 +63,20 @@ impl Author {
         for curse in curses {
             map.insert(curse.to_string(), 0);
         }
-        Author { name, curses: map }
+        Author {
+            name,
+            curses: map,
+            total_commits: 0,
+            total_curses: 0,
+        }
+    }
+
+    fn did_a_naughty(&mut self) {
+        self.total_curses += 1;
+    }
+
+    fn did_a_commit(&mut self) {
+        self.total_commits += 1;
     }
 
     fn update_occurrence(&mut self, curse: &str) {
@@ -91,9 +117,11 @@ fn main() -> Result<(), Box<Error>> {
             .position(|i| i.name == author)
             .expect("Could not find author");
         let mut author = &mut authors[index];
+        author.did_a_commit();
         for word in text.split_whitespace() {
             let word = clean_word(word);
             if naughty_word(word.as_str(), &curses) {
+                author.did_a_naughty();
                 author.update_occurrence(word.as_str());
             }
         }
@@ -101,8 +129,7 @@ fn main() -> Result<(), Box<Error>> {
     for mut author in authors {
         author.filter_occurrences();
         if !author.is_not_naughty() {
-            println!("{}", author.name);
-            println!("{:#?}", author.curses);
+            println!("{}", author);
         }
     }
     Ok(())
