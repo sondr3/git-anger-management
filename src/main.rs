@@ -1,9 +1,12 @@
 #![cfg_attr(feature = "fail-on-warnings", deny(warnings))]
-extern crate git2;
 #[macro_use]
 extern crate structopt;
 #[macro_use]
 extern crate lazy_static;
+
+extern crate crossbeam_channel;
+extern crate git2;
+extern crate rayon;
 
 use git2::Repository;
 use std::collections::{HashMap, HashSet};
@@ -99,12 +102,12 @@ impl Author {
         }
     }
 
-    fn update_occurrence(&mut self, curse: &str) {
+    fn update_occurrences(&mut self, curse: &str, occurrences: usize) {
         self.curses
             .get_mut(curse)
-            .map(|count| *count += 1)
+            .map(|count| *count += occurrences)
             .unwrap_or_else(|| {
-                self.curses.insert(curse.to_owned(), 1);
+                self.curses.insert(curse.to_owned(), occurrences);
             })
     }
 
@@ -135,34 +138,53 @@ fn main() -> Result<(), Box<Error>> {
         commits
     };
 
+    let (s, r) = crossbeam_channel::unbounded();
+
     let mut repo = Repo::new(repo_path.file_name().unwrap().to_str().unwrap());
     for commit in &commits {
         if let (Some(author_name), Some(commit_message)) = (
-            commit.author().name(),
+            commit.author().name().map(|n| n.to_owned()),
             commit.message().map(|msg| msg.to_lowercase()),
         ) {
-            let mut total_curses_added = 0;
-
-            {
-                let author = repo.author_for(author_name);
-                author.total_commits += 1;
-                for word in split_into_clean_words(&commit_message) {
-                    if naughty_word(word) {
-                        author.total_curses += 1;
-                        total_curses_added += 1;
-                        author.update_occurrence(word);
-                    }
+            let job_sender = s.clone();
+            rayon::spawn(move || {
+                let mut naughty_words = HashMap::new();
+                for word in split_into_clean_words(&commit_message).filter(|w| naughty_word(w)) {
+                    naughty_words
+                        .get_mut(word)
+                        .map(|count| *count += 1)
+                        .unwrap_or_else(|| {
+                            naughty_words.insert(word.to_owned(), 1);
+                        })
                 }
-            }
-
-            repo.total_commits += 1;
-            repo.total_curses += total_curses_added;
+                job_sender.send((author_name, naughty_words));
+            })
         } else {
             println!(
                 "Warning: skipping commit {:?} because author name OR commit message missing",
                 commit
             );
         }
+    }
+
+    // Drop the sender here so that when the work is done the channel closes
+    drop(s);
+
+    while let Some((author_name, naughty_words)) = r.recv() {
+        let mut total_curses_added = 0;
+
+        {
+            let author = repo.author_for(&author_name);
+            author.total_commits += 1;
+            for (word, occurrences) in naughty_words {
+                author.total_curses += occurrences;
+                total_curses_added += occurrences;
+                author.update_occurrences(&word, occurrences);
+            }
+        }
+
+        repo.total_commits += 1;
+        repo.total_curses += total_curses_added;
     }
 
     println!("{}", repo);
