@@ -9,10 +9,20 @@ use std::error::Error;
 
 static CURSES: &str = include_str!("words.txt");
 
-//struct Author {
-//    name: String,
-//    curses: HashMap<String, usize>,
-//}
+#[derive(Debug)]
+struct Author {
+    name: String,
+    curses: HashMap<&'static str, usize>,
+}
+
+impl Author {
+    fn new(name: &str, curses: HashMap<&'static str, usize>) -> Author {
+        let name = name.to_string();
+        Author {
+            name, curses
+        }
+    }
+}
 
 fn main() -> Result<(), Box<Error>> {
     let curses: Vec<&str> = CURSES.lines().collect();
