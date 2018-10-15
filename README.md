@@ -26,6 +26,10 @@ Output should look something like this:
 $ git anger-management
 Sondre Nilsen
 {
-    "shit": 1
+    "goddamn": 1,
+    "shit": 5,
+    "fucking": 13,
+    "tits": 1,
+    "fuck": 12
 }
 ```
