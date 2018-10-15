@@ -56,14 +56,6 @@ impl Repo {
             total_curses: 0,
         }
     }
-
-    fn naughty_commit(&mut self) {
-        self.total_curses += 1;
-    }
-
-    fn normal_commit(&mut self) {
-        self.total_commits += 1;
-    }
 }
 
 #[derive(Debug, Eq, PartialEq)]
@@ -98,14 +90,6 @@ impl Author {
             total_commits: 0,
             total_curses: 0,
         }
-    }
-
-    fn did_a_naughty(&mut self) {
-        self.total_curses += 1;
-    }
-
-    fn did_a_commit(&mut self) {
-        self.total_commits += 1;
     }
 
     fn update_occurrence(&mut self, curse: &str) {
@@ -147,13 +131,13 @@ fn main() -> Result<(), Box<Error>> {
             .position(|i| i.name == author)
             .expect("Could not find author");
         let mut author = &mut authors[index];
-        author.did_a_commit();
-        repo.normal_commit();
+        author.total_commits += 1;
+        repo.total_commits += 1;
         for word in text.split_whitespace() {
             let word = clean_word(word);
             if naughty_word(word.as_str(), &curses) {
-                author.did_a_naughty();
-                repo.naughty_commit();
+                author.total_curses += 1;
+                repo.total_curses += 1;
                 author.update_occurrence(word.as_str());
             }
         }
