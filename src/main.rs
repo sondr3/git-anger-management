@@ -7,10 +7,9 @@ extern crate lazy_static;
 
 use git2::Repository;
 use std::collections::{HashMap, HashSet};
-use std::env;
 use std::error::Error;
-use std::fmt;
 use std::path::PathBuf;
+use std::{char, env, fmt};
 use structopt::clap::AppSettings;
 use structopt::StructOpt;
 
@@ -100,8 +99,13 @@ impl Author {
         }
     }
 
-    fn update_occurrence(&mut self, curse: String) {
-        *self.curses.entry(curse).or_insert(0) += 1;
+    fn update_occurrence(&mut self, curse: &str) {
+        self.curses
+            .get_mut(curse)
+            .map(|count| *count += 1)
+            .unwrap_or_else(|| {
+                self.curses.insert(curse.to_owned(), 1);
+            })
     }
 
     fn is_naughty(&self) -> bool {
@@ -142,9 +146,8 @@ fn main() -> Result<(), Box<Error>> {
             {
                 let author = repo.author_for(author_name);
                 author.total_commits += 1;
-                for word in commit_message.split_whitespace() {
-                    let word = clean_word(word);
-                    if naughty_word(&word) {
+                for word in split_into_clean_words(&commit_message) {
+                    if naughty_word(word) {
                         author.total_curses += 1;
                         total_curses_added += 1;
                         author.update_occurrence(word);
@@ -171,20 +174,9 @@ fn main() -> Result<(), Box<Error>> {
     Ok(())
 }
 
-fn clean_word(word: &str) -> String {
-    let mut res = String::with_capacity(word.len());
-    for b in word.chars() {
-        match b {
-            '!' => {}
-            '?' => {}
-            ':' => {}
-            ';' => {}
-            '.' => {}
-            ',' => {}
-            _ => res.push(b),
-        }
-    }
-    res
+fn split_into_clean_words(l: &str) -> impl Iterator<Item = &str> {
+    l.split(|c| !char::is_alphabetic(c))
+        .filter(|w| !w.is_empty())
 }
 
 fn naughty_word(word: &str) -> bool {
@@ -204,11 +196,20 @@ mod test {
 
     #[test]
     fn test_clean_word() {
-        let w1 = "This! is a string: with, some. words in? it;".to_string();
-        let w1 = clean_word(w1.as_str());
+        let clean_words = split_into_clean_words("This! is a string: with, some. words in? it;")
+            .collect::<Vec<_>>();
         assert_eq!(
-            "This is a string with some words in it",
-            w1.trim().to_string()
+            clean_words,
+            vec!["This", "is", "a", "string", "with", "some", "words", "in", "it"]
         );
+    }
+
+    // The new implementation yields str slices and does not allocate, which
+    // is good. However, it differs from the previous implementation because
+    // words with invalid characters in the middle are not joined together.
+    #[test]
+    fn does_not_join_words_with_invalid_characters_in_middle() {
+        let clean_words = split_into_clean_words("inv!alid").collect::<Vec<_>>();
+        assert_eq!(clean_words, vec!["inv", "alid"]);
     }
 }
