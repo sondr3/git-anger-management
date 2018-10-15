@@ -1,11 +1,12 @@
 #![cfg_attr(feature = "fail-on-warnings", deny(warnings))]
-#![forbid(unsafe_code)]
 extern crate git2;
 #[macro_use]
 extern crate structopt;
+#[macro_use]
+extern crate lazy_static;
 
-use git2::{Commit, Repository};
-use std::collections::HashMap;
+use git2::Repository;
+use std::collections::{HashMap, HashSet};
 use std::env;
 use std::error::Error;
 use std::fmt;
@@ -14,6 +15,9 @@ use structopt::clap::AppSettings;
 use structopt::StructOpt;
 
 static CURSES: &str = include_str!("words.txt");
+lazy_static! {
+    static ref CURSES_SET: HashSet<&'static str> = { CURSES.lines().collect() };
+}
 
 #[derive(StructOpt, Debug)]
 #[structopt(
@@ -106,8 +110,6 @@ impl Author {
 }
 
 fn main() -> Result<(), Box<Error>> {
-    let curses: Vec<&str> = CURSES.lines().collect();
-
     let repo_path = {
         let opt = Cli::from_args();
         if let Some(directory) = opt.directory {
@@ -140,7 +142,7 @@ fn main() -> Result<(), Box<Error>> {
                 author.total_commits += 1;
                 for word in text.split_whitespace() {
                     let word = clean_word(word);
-                    if naughty_word(&word, &curses) {
+                    if naughty_word(&word) {
                         author.total_curses += 1;
                         total_curses_added += 1;
                         author.update_occurrence(word);
@@ -178,8 +180,8 @@ fn clean_word(word: &str) -> String {
     res
 }
 
-fn naughty_word(word: &str, naughty_list: &[&str]) -> bool {
-    naughty_list.contains(&word)
+fn naughty_word(word: &str) -> bool {
+    CURSES_SET.contains(&word)
 }
 
 #[cfg(test)]
@@ -188,10 +190,9 @@ mod test {
 
     #[test]
     fn test_naughty_words() {
-        let curses: Vec<&str> = CURSES.lines().collect();
-        assert!(naughty_word("fuck", &curses));
-        assert!(naughty_word("cyberfuckers", &curses));
-        assert!(!naughty_word("pretty", &curses));
+        assert!(naughty_word("fuck"));
+        assert!(naughty_word("cyberfuckers"));
+        assert!(!naughty_word("pretty"));
     }
 
     #[test]
