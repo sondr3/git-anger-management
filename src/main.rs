@@ -3,10 +3,10 @@
 extern crate git2;
 
 use git2::{Commit, Repository};
+use std::cmp::PartialEq;
 use std::collections::HashMap;
 use std::env;
 use std::error::Error;
-use std::cmp::PartialEq;
 
 static CURSES: &str = include_str!("words.txt");
 
@@ -30,10 +30,7 @@ impl Author {
         for curse in curses {
             map.insert(curse.to_string(), 0);
         }
-        Author {
-            name,
-            curses: map,
-        }
+        Author { name, curses: map }
     }
 
     fn update_occurrence(&mut self, curse: &str) {
@@ -64,7 +61,10 @@ fn main() -> Result<(), Box<Error>> {
     for commit in &commits {
         let text = commit.message_raw().unwrap().to_lowercase().to_string();
         let author = commit.author().name().unwrap().to_string();
-        let index = authors.iter().position(|i| i.name == author).expect("Could not find author");
+        let index = authors
+            .iter()
+            .position(|i| i.name == author)
+            .expect("Could not find author");
         let mut author = authors.get_mut(index).unwrap();
         for word in text.split_whitespace() {
             if naughty_word(word, &curses) {
