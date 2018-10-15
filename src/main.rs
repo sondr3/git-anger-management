@@ -2,7 +2,7 @@
 #![forbid(unsafe_code)]
 extern crate git2;
 
-use git2::Repository;
+use git2::{Commit, Repository};
 use std::collections::HashMap;
 use std::env;
 use std::error::Error;
@@ -28,14 +28,37 @@ fn main() -> Result<(), Box<Error>> {
     let curses: Vec<&str> = CURSES.lines().collect();
     let path = env::current_dir()?;
     let repo = Repository::open(path)?;
+    let mut revwalk = repo.revwalk()?;
     let mut occurrences: HashMap<&str, usize> = HashMap::new();
+    let mut commits: Vec<Commit> = Vec::new();
     for curse in &curses {
         occurrences.entry(curse).or_insert(0);
     }
+    revwalk.push_head()?;
+    for commit in revwalk {
+        let commit = repo.find_commit(commit?)?;
+        commits.push(commit);
+    }
+    let mut authors: Vec<Author> = find_authors(&commits);
     println!("{:?}", repo.workdir());
     filter_occurrences(&mut occurrences);
     println!("{:#?}", occurrences);
+    println!("{:#?}", commits);
+    print!("{:#?}", authors);
     Ok(())
+}
+
+fn find_authors(commits: &[Commit]) -> Vec<Author> {
+    let mut names: Vec<String> = Vec::new();
+    let mut res: Vec<Author> = Vec::new();
+    for commit in commits {
+        let name = commit.author().name().unwrap().to_string();
+        if !names.contains(&name) {
+            res.push(Author::new(name.as_str(), HashMap::new()));
+        }
+        names.push(name);
+    }
+    res
 }
 
 fn update_occurrence<'a>(word: &'a str, map: &mut HashMap<&'a str, usize>) {
