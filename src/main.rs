@@ -23,11 +23,29 @@ impl PartialEq for Author {
 }
 
 impl Author {
-    fn new(name: &str, curses: HashMap<&'static str, usize>) -> Author {
+    fn new(name: &str) -> Self {
         let name = name.to_string();
-        Author {
-            name, curses
+        let curses: Vec<&str> = CURSES.lines().collect();
+        let mut map: HashMap<String, usize> = HashMap::new();
+        for curse in curses {
+            map.insert(curse.to_string(), 0);
         }
+        Author {
+            name,
+            curses: map,
+        }
+    }
+
+    fn update_occurrence(&mut self, curse: &str) {
+        self.curses.entry(curse.to_string()).and_modify(|i| *i += 1);
+    }
+
+    fn filter_occurrences(&mut self) {
+        self.curses.retain(|_, val| val > &mut 0);
+    }
+
+    fn is_not_naughty(&self) -> bool {
+        self.curses.is_empty()
     }
 }
 
