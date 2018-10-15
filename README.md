@@ -33,3 +33,18 @@ Sondre Nilsen
     "fuck": 12
 }
 ```
+
+You can also point it to other directories if you want to look somwhere else
+but you're too lazy to actually `cd` into that directory:
+
+```sh
+$ git anger-management ../../kattis/
+Sondre Nilsen
+{
+    "fucking": 1,
+    "fuck": 1,
+    "goddamn": 1
+}
+```
+
+Or look at the help by running `git anger-management -h`.
