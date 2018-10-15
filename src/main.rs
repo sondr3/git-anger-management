@@ -5,7 +5,6 @@ extern crate git2;
 extern crate structopt;
 
 use git2::{Commit, Repository};
-use std::cmp;
 use std::collections::HashMap;
 use std::env;
 use std::error::Error;
@@ -67,7 +66,7 @@ impl Repo {
     }
 }
 
-#[derive(Debug, Eq)]
+#[derive(Debug, Eq, PartialEq)]
 struct Author {
     name: String,
     total_commits: usize,
@@ -82,12 +81,6 @@ impl fmt::Display for Author {
             "{}: ({}/{}) naughty commits/commits\n{:#?}",
             self.name, self.total_curses, self.total_commits, self.curses
         )
-    }
-}
-
-impl cmp::PartialEq for Author {
-    fn eq(&self, other: &Author) -> bool {
-        self.name == other.name
     }
 }
 
