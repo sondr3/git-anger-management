@@ -6,13 +6,20 @@ use git2::{Commit, Repository};
 use std::collections::HashMap;
 use std::env;
 use std::error::Error;
+use std::cmp::PartialEq;
 
 static CURSES: &str = include_str!("words.txt");
 
-#[derive(Debug)]
+#[derive(Debug, Eq)]
 struct Author {
     name: String,
-    curses: HashMap<&'static str, usize>,
+    curses: HashMap<String, usize>,
+}
+
+impl PartialEq for Author {
+    fn eq(&self, other: &Author) -> bool {
+        self.name == other.name
+    }
 }
 
 impl Author {
