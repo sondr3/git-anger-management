@@ -8,10 +8,12 @@ use git2::{Commit, Repository};
 use std::collections::HashMap;
 use std::env;
 use std::error::Error;
+use std::time::Instant;
 use std::fmt;
 use std::path::PathBuf;
 use structopt::clap::AppSettings;
 use structopt::StructOpt;
+use std::collections::HashSet;
 
 static CURSES: &str = include_str!("words.txt");
 
@@ -102,8 +104,9 @@ impl Author {
 }
 
 fn main() -> Result<(), Box<Error>> {
+    let start = Instant::now();
     let opt = Cli::from_args();
-    let curses: Vec<&str> = CURSES.lines().collect();
+    let curses: HashSet<&str> = CURSES.lines().collect();
     let path = if opt.directory.is_none() {
         env::current_dir()?
     } else {
@@ -120,16 +123,16 @@ fn main() -> Result<(), Box<Error>> {
     let mut repo = Repo::new(path.file_name().unwrap().to_str().unwrap());
     let mut authors: Vec<Author> = find_authors(&commits);
     for commit in &commits {
-        let text = commit.message().unwrap().to_lowercase().to_string();
-        let author = commit.author().name().unwrap().to_string();
+        let author_name = commit.author().name().map(|n| n.to_owned()).expect("No author found");
+        let commit_message = commit.message().map(|msg| msg.to_lowercase()).expect("No commit message found");
         let index = authors
             .iter()
-            .position(|i| i.name == author)
+            .position(|i| i.name == author_name)
             .expect("Could not find author");
         let mut author = &mut authors[index];
         author.total_commits += 1;
         repo.total_commits += 1;
-        for word in text.split_whitespace() {
+        for word in commit_message.split_whitespace() {
             let word = clean_word(word);
             if naughty_word(word.as_str(), &curses) {
                 author.total_curses += 1;
@@ -138,6 +141,8 @@ fn main() -> Result<(), Box<Error>> {
             }
         }
     }
+    let end = Instant::now();
+    println!("{:?}", end.duration_since(start));
     println!("{}", repo);
     for mut author in authors {
         if author.is_naughty() {
@@ -176,7 +181,7 @@ fn find_authors(commits: &[Commit]) -> Vec<Author> {
     res
 }
 
-fn naughty_word(word: &str, naughty_list: &[&str]) -> bool {
+fn naughty_word(word: &str, naughty_list: &HashSet<&str>) -> bool {
     naughty_list.contains(&word)
 }
 
@@ -186,7 +191,7 @@ mod test {
 
     #[test]
     fn test_naughty_words() {
-        let curses: Vec<&str> = CURSES.lines().collect();
+        let curses: HashSet<&str> = CURSES.lines().collect();
         assert!(naughty_word("fuck", &curses));
         assert!(naughty_word("cyberfuckers", &curses));
         assert!(!naughty_word("pretty", &curses));
