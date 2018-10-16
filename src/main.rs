@@ -139,12 +139,11 @@ fn main() -> Result<(), Box<Error>> {
         let mut author = &mut authors[index];
         author.total_commits += 1;
         repo.total_commits += 1;
-        for word in commit_message.split_whitespace() {
-            let word = clean_word(word);
-            if naughty_word(word.as_str(), &curses) {
+        for word in split_into_clean_words(&commit_message) {
+            if naughty_word(word, &curses) {
                 author.total_curses += 1;
                 repo.total_curses += 1;
-                author.update_occurrence(word.as_str());
+                author.update_occurrence(word);
             }
         }
     }
@@ -159,20 +158,10 @@ fn main() -> Result<(), Box<Error>> {
     Ok(())
 }
 
-fn clean_word(word: &str) -> String {
-    let mut res = String::with_capacity(word.len());
-    for b in word.chars() {
-        match b {
-            '!' => {}
-            '?' => {}
-            ':' => {}
-            ';' => {}
-            '.' => {}
-            ',' => {}
-            _ => res.push(b),
-        }
-    }
-    res
+fn split_into_clean_words(input: &str) -> impl Iterator<Item = &str> {
+    input
+        .split(|c: char| !char::is_alphabetic(c))
+        .filter(|w| !w.is_empty())
 }
 
 fn find_authors(commits: &[Commit]) -> Vec<Author> {
@@ -206,11 +195,10 @@ mod test {
 
     #[test]
     fn test_clean_word() {
-        let w1 = "This! is a string: with, some. words in? it;".to_string();
-        let w1 = clean_word(w1.as_str());
+        let words = split_into_clean_words("This! is a string: with, some. words in? it;");
         assert_eq!(
-            "This is a string with some words in it",
-            w1.trim().to_string()
+            vec!["This", "is", "a", "string", "with", "some", "words", "in", "it"],
+            words.collect::<Vec<_>>()
         );
     }
 }
