@@ -6,14 +6,14 @@ extern crate structopt;
 
 use git2::{Commit, Repository};
 use std::collections::HashMap;
+use std::collections::HashSet;
 use std::env;
 use std::error::Error;
-use std::time::Instant;
 use std::fmt;
 use std::path::PathBuf;
+use std::time::Instant;
 use structopt::clap::AppSettings;
 use structopt::StructOpt;
-use std::collections::HashSet;
 
 static CURSES: &str = include_str!("words.txt");
 
@@ -123,8 +123,15 @@ fn main() -> Result<(), Box<Error>> {
     let mut repo = Repo::new(path.file_name().unwrap().to_str().unwrap());
     let mut authors: Vec<Author> = find_authors(&commits);
     for commit in &commits {
-        let author_name = commit.author().name().map(|n| n.to_owned()).expect("No author found");
-        let commit_message = commit.message().map(|msg| msg.to_lowercase()).expect("No commit message found");
+        let author_name = commit
+            .author()
+            .name()
+            .map(|n| n.to_owned())
+            .expect("No author found");
+        let commit_message = commit
+            .message()
+            .map(|msg| msg.to_lowercase())
+            .expect("No commit message found");
         let index = authors
             .iter()
             .position(|i| i.name == author_name)
