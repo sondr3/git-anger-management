@@ -152,7 +152,11 @@ fn main() -> Result<(), Box<Error>> {
     }
     let end = Instant::now();
     if verbose {
-        println!("Took {:?} to parse {}", end.duration_since(start), repo.name);
+        println!(
+            "Took {:?} to parse {}",
+            end.duration_since(start),
+            repo.name
+        );
     }
     println!("{}", repo);
     for mut author in repo.authors.values() {
