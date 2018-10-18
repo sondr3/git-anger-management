@@ -24,6 +24,8 @@ static CURSES: &str = include_str!("words.txt");
     raw(global_settings = "&[AppSettings::ColoredHelp]")
 )]
 struct Cli {
+    #[structopt(short = "v", long = "verbose")]
+    verbose: bool,
     #[structopt(
         name = "directory",
         help = "Directory to parse commits",
@@ -111,10 +113,12 @@ impl Author {
 fn main() -> Result<(), Box<Error>> {
     let start = Instant::now();
     let curses: HashSet<&str> = CURSES.lines().collect();
-    let path = match Cli::from_args().directory {
+    let opt = Cli::from_args();
+    let path = match opt.directory {
         Some(directory) => directory,
         None => env::current_dir()?,
     };
+    let verbose = opt.verbose;
     let repo = Repository::open(&path)?;
     let mut revwalk = repo.revwalk()?;
     let mut commits: Vec<Commit> = Vec::new();
@@ -147,7 +151,9 @@ fn main() -> Result<(), Box<Error>> {
         }
     }
     let end = Instant::now();
-    println!("{:?}", end.duration_since(start));
+    if verbose {
+        println!("Took {:?} to parse {}", end.duration_since(start), repo.name);
+    }
     println!("{}", repo);
     for mut author in repo.authors.values() {
         if author.is_naughty() {
