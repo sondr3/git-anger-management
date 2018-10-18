@@ -110,12 +110,10 @@ impl Author {
 
 fn main() -> Result<(), Box<Error>> {
     let start = Instant::now();
-    let opt = Cli::from_args();
     let curses: HashSet<&str> = CURSES.lines().collect();
-    let path = if opt.directory.is_none() {
-        env::current_dir()?
-    } else {
-        opt.directory.unwrap()
+    let path = match Cli::from_args().directory {
+        Some(directory) => directory,
+        None => env::current_dir()?,
     };
     let repo = Repository::open(&path)?;
     let mut revwalk = repo.revwalk()?;
