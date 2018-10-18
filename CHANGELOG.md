@@ -1,7 +1,23 @@
-## HEAD
-> 2018-10-15
+## 0.4.0
+> 2018-10-18
+
+Thanks to everyone who chimed in on both reddit and on GitHub for helping!
+Especially [Darren Tsung](https://github.com/DarrenTsung), whose pull request
+has shown me so much new stuff that I haven't learned yet. I've applied some of
+the suggestions from him making the code more readable and added a verbosity
+flag and removed some unneeded words from the word list.
 
 #### Changelog:
+* [[`fda389c4d9`](https://github.com/sondr3/git-anger-management/commit/fda389c4d9)] - Update version of git-anger-management
+* [[`e29428bd5a`](https://github.com/sondr3/git-anger-management/commit/e29428bd5a)] - Update changelog
+* [[`d0ccfaff2c`](https://github.com/sondr3/git-anger-management/commit/d0ccfaff2c)] - Fix failing CI due to formatting
+* [[`19bb81d936`](https://github.com/sondr3/git-anger-management/commit/19bb81d936)] - Add verbosity flag
+* [[`8be2eca194`](https://github.com/sondr3/git-anger-management/commit/8be2eca194)] - Match against what directory to look from, neat
+* [[`e1ab587700`](https://github.com/sondr3/git-anger-management/commit/e1ab587700)] - More suggestions from #1
+* [[`8f34037514`](https://github.com/sondr3/git-anger-management/commit/8f34037514)] - Minor removal of extra stupid words
+* [[`45c328ca9b`](https://github.com/sondr3/git-anger-management/commit/45c328ca9b)] - Use split\_into\_clean\_words() from #1
+* [[`f255dca68c`](https://github.com/sondr3/git-anger-management/commit/f255dca68c)] - Format code
+* [[`7d7c595c37`](https://github.com/sondr3/git-anger-management/commit/7d7c595c37)] - Minor cleanups and refactorings
 * [[`7d63834b84`](https://github.com/sondr3/git-anger-management/commit/7d63834b84)] - Refactor author initialization
 * [[`d60bf41e32`](https://github.com/sondr3/git-anger-management/commit/d60bf41e32)] - Remove functions where you can directly update values
 * [[`6fabb676bb`](https://github.com/sondr3/git-anger-management/commit/6fabb676bb)] - We can just derive PartialEq, no need for our own implementation
