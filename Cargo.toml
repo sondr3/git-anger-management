@@ -9,9 +9,6 @@ documentation = "https://github.com/sondr3/git-anger-management"
 readme = "README.md"
 license = "GPL-3.0-or-later"
 
-[badges]
-travis-ci = { repository = "sondr3/git-anger-management" }
-
 [[bin]]
 name = "git-anger-management"
 path = "src/main.rs"
