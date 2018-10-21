@@ -101,8 +101,13 @@ impl Author {
         }
     }
 
-    fn update_occurrence(&mut self, curse: impl Into<String>) {
-        *self.curses.entry(curse.into()).or_insert(0) += 1;
+    fn update_occurrence(&mut self, curse: &str) {
+        self.curses
+            .get_mut(curse)
+            .map(|c| *c += 1)
+            .unwrap_or_else(|| {
+                self.curses.insert(curse.to_owned(), 1);
+            })
     }
 
     fn is_naughty(&self) -> bool {
