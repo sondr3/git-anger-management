@@ -75,7 +75,7 @@ impl Repo {
     }
 
     fn count_curses(&mut self) {
-        for (_, author) in &self.authors {
+        for author in self.authors.values() {
             for (curse, count) in &author.curses {
                 self.curses
                     .entry(curse.to_string())
