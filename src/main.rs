@@ -119,6 +119,7 @@ fn main() -> Result<(), Box<Error>> {
         None => env::current_dir()?,
     };
     let verbose = opt.verbose;
+
     let repo = Repository::open(&path)?;
     let commits = {
         let mut revwalk = repo.revwalk()?;
@@ -130,13 +131,13 @@ fn main() -> Result<(), Box<Error>> {
         }
         commits
     };
+
     let mut repo = Repo::new(path.file_name().unwrap().to_str().unwrap());
     for commit in &commits {
-        let commit_message = commit
-            .message()
-            .map(|msg| msg.to_lowercase())
-            .expect("No commit message found");
-        if let Some(author_name) = commit.author().name() {
+        if let (Some(author_name), Some(commit_message)) = (
+            commit.author().name(),
+            commit.message().map(|w| w.to_lowercase()),
+        ) {
             let mut curses_added = 0;
             {
                 let author = repo.author(author_name);
@@ -151,8 +152,14 @@ fn main() -> Result<(), Box<Error>> {
             }
             repo.total_commits += 1;
             repo.total_curses += curses_added;
+        } else {
+            eprintln!(
+                "Skipping commit {:?} because either the commit author or message is missing",
+                commit
+            );
         }
     }
+
     let end = Instant::now();
     if verbose {
         println!(
@@ -161,12 +168,14 @@ fn main() -> Result<(), Box<Error>> {
             repo.name
         );
     }
+
     println!("{}", repo);
     for mut author in repo.authors.values() {
         if author.is_naughty() {
             println!("{}", author);
         }
     }
+
     Ok(())
 }
 
