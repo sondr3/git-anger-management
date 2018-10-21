@@ -39,6 +39,7 @@ struct Repo {
     name: String,
     total_commits: usize,
     total_curses: usize,
+    curses: HashMap<String, usize>,
     authors: HashMap<String, Author>,
 }
 
@@ -46,8 +47,8 @@ impl fmt::Display for Repo {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "{}: ({}/{}) naughty commits/commits",
-            self.name, self.total_curses, self.total_commits
+            "{}: ({}/{}) naughty commits/commits\n{:#?}",
+            self.name, self.total_curses, self.total_commits, self.curses
         )
     }
 }
@@ -58,6 +59,7 @@ impl Repo {
             name: name.into(),
             total_commits: 0,
             total_curses: 0,
+            curses: HashMap::new(),
             authors: HashMap::new(),
         }
     }
@@ -70,6 +72,17 @@ impl Repo {
         }
 
         self.authors.get_mut(author_name).expect("exists")
+    }
+
+    fn count_curses(&mut self) {
+        for (_, author) in &self.authors {
+            for (curse, count) in &author.curses {
+                self.curses
+                    .entry(curse.to_string())
+                    .and_modify(|c| *c += count)
+                    .or_insert(*count);
+            }
+        }
     }
 }
 
@@ -165,6 +178,7 @@ fn main() -> Result<(), Box<Error>> {
         }
     }
 
+    repo.count_curses();
     let end = Instant::now();
     if verbose {
         println!(
