@@ -11,7 +11,7 @@ license = "GPL-3.0-or-later"
 
 [[bin]]
 name = "git-anger-management"
-path = "src/main.rs"
+path = "src/bin.rs"
 
 [features]
 fail-on-warnings = []
