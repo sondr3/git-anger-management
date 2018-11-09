@@ -5,12 +5,18 @@ lazy_static! {
     pub static ref CURSES: HashSet<&'static str> = CURSES_FILE.lines().collect();
 }
 
+/// Cleans a string and returns a list containing the cleaned up words.
+///
+/// Of note here is that the implementation splits on any character that is not
+/// a letter, even if it is in the middle of a "word". This should not be a
+/// problem.
 pub fn split_into_clean_words(input: &str) -> impl Iterator<Item = &str> {
     input
         .split(|c: char| !char::is_alphabetic(c))
         .filter(|w| !w.is_empty())
 }
 
+/// Checks if a word is naughty.
 pub fn naughty_word(word: &str) -> bool {
     CURSES.contains(&word)
 }

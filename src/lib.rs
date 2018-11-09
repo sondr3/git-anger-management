@@ -1,30 +1,29 @@
 #![cfg_attr(feature = "fail-on-warnings", deny(warnings))]
-//#![deny(missing_docs)]
-//#![deny(missing_debug_implementations)]
+#![deny(missing_docs)]
+#![deny(missing_debug_implementations)]
 #![forbid(unsafe_code)]
 #![doc(html_root_url = "https://docs.rs/git-anger-management/0.4.0")]
-
 //! # git-anger-management
 //!
 //! ## What
 //!
-//! Have you ever wondered how much you or your co-workers actually curse in your
-//! commit messages? Worry no more, `git-anger-management` is here to help you.
-//! Simply run it against your repository and it'll tell you who is the naughtiest
-//! of them all.
+//! Have you ever wondered how much you or your co-workers actually curse in
+//! your commit messages? Worry no more, `git-anger-management` is here to help
+//! you. Simply run it against your repository and it'll tell you who is the
+//! naughtiest of them all.
 //!
 //! ## Why
 //!
 //! Some times the only way to vent at the ridiculous crap we make is to write
-//! really angry commit messages, I do it all the time. And I wanted to know just
-//! how angry I get.
+//! really angry commit messages, I do it all the time. And I wanted to know
+//! just how angry I get.
 //!
 //! # Installation
 //!
 //! Make sure you have Rust installed (I recommend installing via
-//! [rustup](https://rustup.rs/)), then run `cargo install git-anger-management`.
-//! You can now check how naughty you are by running `git anger-management` in the
-//! directory where you want to check naughtiness.
+//! [rustup](https://rustup.rs/)), then run `cargo install
+//! git-anger-management`. You can now check how naughty you are by running `git
+//! anger-management` in the directory where you want to check naughtiness.
 //!
 //! Output should look something like this:
 //!

@@ -2,12 +2,18 @@ use author::Author;
 use hashbrown::HashMap;
 use std::fmt;
 
+/// A simple representation of a git repository.
 #[derive(Debug)]
 pub struct Repo {
+    /// Name of the repository.
     pub name: String,
+    /// Count of the total amount of commits in the repository.
     pub total_commits: usize,
+    /// Count of the total amount of curses used in the commits.
     pub total_curses: usize,
+    /// HashMap of all the naughty words used by the authors.
     pub curses: HashMap<String, usize>,
+    /// HashMap of all the authors that have been committed.
     pub authors: HashMap<String, Author>,
 }
 
@@ -22,6 +28,7 @@ impl fmt::Display for Repo {
 }
 
 impl Repo {
+    /// Creates a new and empty repository.
     pub fn new(name: impl Into<String>) -> Self {
         Repo {
             name: name.into(),
@@ -32,6 +39,8 @@ impl Repo {
         }
     }
 
+    /// Checks if an author exists and creates a new author if she/he doesn't
+    /// exist.
     pub fn author(&mut self, author_name: &str) -> &mut Author {
         if !self.authors.contains_key(author_name) {
             self.authors
@@ -42,6 +51,7 @@ impl Repo {
         self.authors.get_mut(author_name).expect("exists")
     }
 
+    /// Counts all the naughty words used by authors.
     pub fn count_curses(&mut self) {
         for author in self.authors.values() {
             for (curse, count) in &author.curses {
