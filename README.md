@@ -24,28 +24,44 @@ Output should look something like this:
 
 ```sh
 $ git anger-management
-repo: (32/512) naughty commits/commits
-Sondre Nilsen: (32/438) naughty commits/commits
+repo: (46/569) naughty commits/commits
 {
-    "goddamn": 1,
-    "fuck": 12,
-    "fucking": 13,
-    "shit": 5,
+    "goddamn": 2,
+    "shit": 7,
+    "fuck": 18,
+    "bloody": 2,
+    "fucking": 15,
+    "fucked": 1,
     "tits": 1
+}
+Sondre Nilsen: (46/495) naughty commits/commits
+{
+    "goddamn": 2,
+    "shit": 7,
+    "tits": 1,
+    "bloody": 2,
+    "fucking": 15,
+    "fucked": 1,
+    "fuck": 18
 }
 ```
 
-You can also point it to other directories if you want to look somwhere else
-but you're too lazy to actually `cd` into that directory:
+You can also point it to other directories if you want to look somwhere else but
+you're too lazy to actually `cd` into that directory:
 
 ```sh
 $ git anger-management ../../other-repo/
 other-repo: (3/56) naughty commits/commits
+{
+    "goddamn": 1,
+    "fuck": 1,
+    "fucking": 1
+}
 Sondre Nilsen: (3/56) naughty commits/commits
 {
     "goddamn": 1,
-    "fucking": 1,
-    "fuck": 1
+    "fuck": 1,
+    "fucking": 1
 }
 ```
 

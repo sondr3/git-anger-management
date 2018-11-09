@@ -1,3 +1,30 @@
+## 0.5.0
+> 2018-11-09
+
+This release focuses on performance, even though it might be fairly minor. We
+switched the standard library version of HashMap and HashSet to the ones
+implemented in [hashbrown](https://github.com/Amanieu/hashbrown), switched to
+using `lazy_static` since it doesn't require `unsafe` code anymore and switched
+to using `LTO=thin` for releases, all giving us some minor speed boosts. You can
+see more in the git commits for the respective changes. We also added
+documentation and also display total counts of naughty words across all authors
+in the repository.
+
+* [[`21fd6a5d33`](https://github.com/sondr3/git-anger-management/commit/21fd6a5d33)] - Document all the things, ensure it will forever be documented 
+* [[`4e2d1fa786`](https://github.com/sondr3/git-anger-management/commit/4e2d1fa786)] - Make sure the version number is always up to date 
+* [[`1b663923ad`](https://github.com/sondr3/git-anger-management/commit/1b663923ad)] - Initial pass at writing documentation 
+* [[`22c851a22c`](https://github.com/sondr3/git-anger-management/commit/22c851a22c)] - Use LTO=thin when running a release version, even more minor speedups 
+* [[`cde15774c3`](https://github.com/sondr3/git-anger-management/commit/cde15774c3)] - Refactor whole thing into several files, library and binary 
+* [[`99488db4f6`](https://github.com/sondr3/git-anger-management/commit/99488db4f6)] - Use lazy\_static to lazily create curses, minor speedups again 
+* [[`6ce95329fc`](https://github.com/sondr3/git-anger-management/commit/6ce95329fc)] - Include Cargo.lock since this is a binary application 
+* [[`92646d638c`](https://github.com/sondr3/git-anger-management/commit/92646d638c)] - Use hashbrown instead of std::{HashMap, HashSet} for minor speedups 
+* [[`b0284df3cf`](https://github.com/sondr3/git-anger-management/commit/b0284df3cf)] - Fix Clippy lint 
+* [[`d2b66c882e`](https://github.com/sondr3/git-anger-management/commit/d2b66c882e)] - Show curses per repo and not just per author 
+* [[`b2c074db76`](https://github.com/sondr3/git-anger-management/commit/b2c074db76)] - Change update\_occurrence so that it doesn't copy strings 
+* [[`4ae3a8235f`](https://github.com/sondr3/git-anger-management/commit/4ae3a8235f)] - Use if let on both author and commit message 
+* [[`cb090b909d`](https://github.com/sondr3/git-anger-management/commit/cb090b909d)] - Refactor adding commits to a vec to be in their own little scope 
+* [[`0a77ad1a2f`](https://github.com/sondr3/git-anger-management/commit/0a77ad1a2f)] - Remove badge because crates.io doesn't work with travis.com 
+
 ## 0.4.0
 > 2018-10-18
 
