@@ -13,6 +13,9 @@ license = "GPL-3.0-or-later"
 name = "git-anger-management"
 path = "src/bin.rs"
 
+[profile.release]
+lto = "thin"
+
 [features]
 fail-on-warnings = []
 
