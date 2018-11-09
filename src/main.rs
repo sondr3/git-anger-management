@@ -1,5 +1,7 @@
 #![cfg_attr(feature = "fail-on-warnings", deny(warnings))]
 #![forbid(unsafe_code)]
+#[macro_use]
+extern crate lazy_static;
 extern crate git2;
 extern crate hashbrown;
 extern crate structopt;
@@ -14,7 +16,10 @@ use std::time::Instant;
 use structopt::clap::AppSettings;
 use structopt::StructOpt;
 
-static CURSES: &str = include_str!("words.txt");
+static CURSES_FILE: &str = include_str!("words.txt");
+lazy_static! {
+    static ref CURSES: HashSet<&'static str> = CURSES_FILE.lines().collect();
+}
 
 #[derive(StructOpt, Debug)]
 #[structopt(
@@ -129,7 +134,6 @@ impl Author {
 
 fn main() -> Result<(), Box<Error>> {
     let start = Instant::now();
-    let curses: HashSet<&str> = CURSES.lines().collect();
     let opt = Cli::from_args();
     let path = match opt.directory {
         Some(directory) => directory,
@@ -160,7 +164,7 @@ fn main() -> Result<(), Box<Error>> {
                 let author = repo.author(author_name);
                 author.total_commits += 1;
                 for word in split_into_clean_words(&commit_message) {
-                    if naughty_word(word, &curses) {
+                    if naughty_word(word) {
                         author.total_curses += 1;
                         curses_added += 1;
                         author.update_occurrence(word);
@@ -203,8 +207,8 @@ fn split_into_clean_words(input: &str) -> impl Iterator<Item = &str> {
         .filter(|w| !w.is_empty())
 }
 
-fn naughty_word(word: &str, naughty_list: &HashSet<&str>) -> bool {
-    naughty_list.contains(&word)
+fn naughty_word(word: &str) -> bool {
+    CURSES.contains(&word)
 }
 
 #[cfg(test)]
@@ -214,9 +218,9 @@ mod test {
     #[test]
     fn test_naughty_words() {
         let curses: HashSet<&str> = CURSES.lines().collect();
-        assert!(naughty_word("fuck", &curses));
-        assert!(naughty_word("cyberfuckers", &curses));
-        assert!(!naughty_word("pretty", &curses));
+        assert!(naughty_word("fuck"));
+        assert!(naughty_word("cyberfuckers"));
+        assert!(!naughty_word("pretty"));
     }
 
     #[test]
