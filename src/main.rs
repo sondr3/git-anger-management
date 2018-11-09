@@ -1,12 +1,11 @@
 #![cfg_attr(feature = "fail-on-warnings", deny(warnings))]
 #![forbid(unsafe_code)]
 extern crate git2;
-#[macro_use]
+extern crate hashbrown;
 extern crate structopt;
 
 use git2::{Commit, Repository};
-use std::collections::HashMap;
-use std::collections::HashSet;
+use hashbrown::{HashMap, HashSet};
 use std::env;
 use std::error::Error;
 use std::fmt;
@@ -86,7 +85,7 @@ impl Repo {
     }
 }
 
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug)]
 struct Author {
     name: String,
     total_commits: usize,
