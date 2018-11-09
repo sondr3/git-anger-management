@@ -1,4 +1,5 @@
 #![cfg_attr(feature = "fail-on-warnings", deny(warnings))]
+#![cfg_attr(feature = "cargo-clippy", deny(clippy, clippy_pedantic))]
 #![deny(missing_docs)]
 #![deny(missing_debug_implementations)]
 #![forbid(unsafe_code)]
