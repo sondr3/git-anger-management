@@ -3,7 +3,7 @@
 #![deny(missing_docs)]
 #![deny(missing_debug_implementations)]
 #![forbid(unsafe_code)]
-#![doc(html_root_url = "https://docs.rs/git-anger-management/0.5.0")]
+#![doc(html_root_url = "https://docs.rs/git-anger-management/0.5.1")]
 //! # git-anger-management
 //!
 //! ## What

@@ -1,3 +1,13 @@
+## 0.5.1
+> 2018-11-09
+
+Minor bug fixes, forgot to update the link to the documentation and fixed some
+outdated Clippy settings.
+
+* [[`a3a527e1c1`](https://github.com/sondr3/git-anger-management/commit/a3a527e1c1)] - A pedantic Clippy was very annoying, disable for now 
+* [[`96c5ead508`](https://github.com/sondr3/git-anger-management/commit/96c5ead508)] - Update Cargo.toml and refactor it slightly 
+* [[`8e6acc63b1`](https://github.com/sondr3/git-anger-management/commit/8e6acc63b1)] - Update Clippy settings, make it even... worse 
+
 ## 0.5.0
 > 2018-11-09
 
