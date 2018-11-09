@@ -2,12 +2,14 @@
 name = "git-anger-management"
 version = "0.5.0"
 authors = ["Sondre Nilsen <nilsen.sondre@gmail.com>"]
-homepage = "https://github.com/sondr3/git-anger-management"
 description = "Count your naughty words in git commit messages"
 repository = "https://github.com/sondr3/git-anger-management"
-documentation = "https://github.com/sondr3/git-anger-management"
+documentation = "https://docs.rs/crate/git-anger-management/"
+homepage = "https://github.com/sondr3/git-anger-management"
 readme = "README.md"
 license = "GPL-3.0-or-later"
+keywords = ["git", "useless", "fun", "anger-management"]
+categories = ["command-line-utilities"]
 
 [[bin]]
 name = "git-anger-management"
