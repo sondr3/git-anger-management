@@ -1,9 +1,3 @@
-#![cfg_attr(feature = "fail-on-warnings", deny(warnings))]
-#![cfg_attr(feature = "cargo-clippy", deny(clippy))]
-#![deny(missing_docs)]
-#![deny(missing_debug_implementations)]
-#![forbid(unsafe_code)]
-#![doc(html_root_url = "https://docs.rs/git-anger-management/0.5.1")]
 //! # git-anger-management
 //!
 //! ## What
@@ -72,6 +66,17 @@
 //! ```
 //!
 //! Or look at the help by running `git anger-management -h`.
+#![cfg_attr(feature = "fail-on-warnings", deny(warnings))]
+#![cfg_attr(feature = "cargo-clippy", deny(clippy))]
+#![forbid(unsafe_code)]
+#![deny(
+    missing_docs,
+    missing_debug_implementations,
+    missing_copy_implementations,
+    trivial_casts,
+    unused_import_braces,
+    unused_allocation
+)]
 
 #[macro_use]
 extern crate lazy_static;
