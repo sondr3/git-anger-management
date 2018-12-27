@@ -1,10 +1,12 @@
 extern crate git2;
 extern crate git_anger_management as gam;
+extern crate indicatif;
 extern crate structopt;
 
 use gam::Repo;
 use gam::{naughty_word, split_into_clean_words};
 use git2::{Commit, Repository};
+use indicatif::{ProgressBar, ProgressStyle};
 use std::env;
 use std::error::Error;
 use std::path::PathBuf;
@@ -21,6 +23,8 @@ use structopt::StructOpt;
 struct Cli {
     #[structopt(short = "v", long = "verbose")]
     verbose: bool,
+    #[structopt(short = "p", long = "progress")]
+    progress: bool,
     #[structopt(
         name = "directory",
         help = "Directory to parse commits",
@@ -37,6 +41,7 @@ pub fn main() -> Result<(), Box<Error>> {
         None => env::current_dir()?,
     };
     let verbose = opt.verbose;
+    let progress = opt.progress;
 
     let repo = Repository::open(&path)?;
     let commits = {
@@ -50,6 +55,15 @@ pub fn main() -> Result<(), Box<Error>> {
         commits
     };
 
+    let mut progress_bar = ProgressBar::hidden();
+    if !progress {
+        progress_bar = ProgressBar::new(commits.len() as u64);
+        progress_bar.set_style(
+            ProgressStyle::default_bar()
+                .template("[{elapsed}] ▕{bar:40}▏{msg} ({eta})")
+                .progress_chars("█▉▊▋▌▍▎▏ "),
+        );
+    }
     let mut repo = Repo::new(path.file_name().unwrap().to_str().unwrap());
     for commit in &commits {
         if let (Some(author_name), Some(commit_message)) = (
@@ -70,6 +84,8 @@ pub fn main() -> Result<(), Box<Error>> {
             }
             repo.total_commits += 1;
             repo.total_curses += curses_added;
+            progress_bar.set_message(&format!("commit {:?}", commit.id()));
+            progress_bar.inc(1);
         } else {
             eprintln!(
                 "Skipping commit {:?} because either the commit author or message is missing",
@@ -78,14 +94,10 @@ pub fn main() -> Result<(), Box<Error>> {
         }
     }
 
+    progress_bar.finish_and_clear();
     repo.count_curses();
-    let end = Instant::now();
     if verbose {
-        println!(
-            "Took {:?} to parse {}",
-            end.duration_since(start),
-            repo.name
-        );
+        println!("Took {:?} to parse {}", start.elapsed(), repo.name);
     }
 
     println!("{}", repo);

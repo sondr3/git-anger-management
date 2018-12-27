@@ -81,6 +81,7 @@
 #[macro_use]
 extern crate lazy_static;
 extern crate hashbrown;
+extern crate indicatif;
 
 mod author;
 mod core;
