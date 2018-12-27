@@ -7,6 +7,8 @@ commit messages? Worry no more, `git-anger-management` is here to help you.
 Simply run it against your repository and it'll tell you who is the naughtiest
 of them all.
 
+[![asciicast](https://asciinema.org/a/218651.svg)](https://asciinema.org/a/218651)
+
 ## Why
 
 Some times the only way to vent at the ridiculous crap we make is to write
