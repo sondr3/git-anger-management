@@ -1,3 +1,20 @@
+## 0.6.0
+> 2018-12-27
+
+This release adds progress bars when running `git-anger-management`. Useful when
+parsing commits in larger repositories as this will show the elapsed time, time
+remaining etc. The rest of the changes are behind-the-scenes stuff, updated
+dependencies and updated to the latest Rust edition (2018).
+
+* [[`53e31ad5a8`](https://github.com/sondr3/git-anger-management/commit/53e31ad5a8)] - Update README to include asciinema "video" of output
+* [[`4f0a873733`](https://github.com/sondr3/git-anger-management/commit/4f0a873733)] - Update CLI struct to use newer StructOpt changes
+* [[`27937aced4`](https://github.com/sondr3/git-anger-management/commit/27937aced4)] - Update to Rust 2018
+* [[`3b441d666b`](https://github.com/sondr3/git-anger-management/commit/3b441d666b)] - Update Travis configuration
+* [[`db5c363fe5`](https://github.com/sondr3/git-anger-management/commit/db5c363fe5)] - Update dependencies
+* [[`544204594f`](https://github.com/sondr3/git-anger-management/commit/544204594f)] - Remove version-sync from dev-dependencies
+* [[`e9348326cd`](https://github.com/sondr3/git-anger-management/commit/e9348326cd)] - Add progress bars to CLI to track progress
+* [[`ce0b7678ec`](https://github.com/sondr3/git-anger-management/commit/ce0b7678ec)] - Move magic commands to below documentation, add a few more deny things
+
 ## 0.5.1
 > 2018-11-09
 
@@ -104,3 +121,4 @@ for more details.
 * [[`475c2efb63`](https://github.com/sondr3/git-anger-management/commit/475c2efb63)] - Add a bunch of curse words
 * [[`6840a70e5c`](https://github.com/sondr3/git-anger-management/commit/6840a70e5c)] - Add git2 as a dependency
 * [[`5329b2e938`](https://github.com/sondr3/git-anger-management/commit/5329b2e938)] - In the beginning there was darkness...
+

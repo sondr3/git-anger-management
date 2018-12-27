@@ -7,6 +7,8 @@
 //! you. Simply run it against your repository and it'll tell you who is the
 //! naughtiest of them all.
 //!
+//! [![asciicast](https://asciinema.org/a/218651.svg)](https://asciinema.org/a/218651)
+//!
 //! ## Why
 //!
 //! Some times the only way to vent at the ridiculous crap we make is to write
@@ -66,6 +68,7 @@
 //! ```
 //!
 //! Or look at the help by running `git anger-management -h`.
+#![doc(html_root_url = "https://docs.rs/git-anger-management/0.6.0")]
 #![cfg_attr(feature = "fail-on-warnings", deny(warnings))]
 #![forbid(unsafe_code)]
 #![deny(
