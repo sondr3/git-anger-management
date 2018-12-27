@@ -15,15 +15,14 @@ use structopt::StructOpt;
     raw(global_settings = "&[AppSettings::ColoredHelp]")
 )]
 struct Cli {
-    #[structopt(short = "v", long = "verbose")]
+    #[structopt(short, long)]
+    /// Verbose output
     verbose: bool,
-    #[structopt(short = "p", long = "progress")]
+    #[structopt(short, long)]
+    /// Disable the progress bar
     progress: bool,
-    #[structopt(
-        name = "directory",
-        help = "Directory to parse commits",
-        parse(from_os_str)
-    )]
+    #[structopt(parse(from_os_str))]
+    /// Directory to parse commits from
     directory: Option<PathBuf>,
 }
 
