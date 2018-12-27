@@ -1,4 +1,4 @@
-use author::Author;
+use crate::author::Author;
 use hashbrown::HashMap;
 use std::fmt;
 

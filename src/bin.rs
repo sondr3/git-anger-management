@@ -1,11 +1,5 @@
-extern crate git2;
-extern crate git_anger_management as gam;
-extern crate indicatif;
-extern crate structopt;
-
-use gam::Repo;
-use gam::{naughty_word, split_into_clean_words};
 use git2::{Commit, Repository};
+use git_anger_management::{naughty_word, split_into_clean_words, Repo};
 use indicatif::{ProgressBar, ProgressStyle};
 use std::env;
 use std::error::Error;
@@ -33,7 +27,7 @@ struct Cli {
     directory: Option<PathBuf>,
 }
 
-pub fn main() -> Result<(), Box<Error>> {
+pub fn main() -> Result<(), Box<dyn Error>> {
     let start = Instant::now();
     let opt = Cli::from_args();
     let path = match opt.directory {
@@ -101,7 +95,7 @@ pub fn main() -> Result<(), Box<Error>> {
     }
 
     println!("{}", repo);
-    for mut author in repo.authors.values() {
+    for author in repo.authors.values() {
         if author.is_naughty() {
             println!("{}", author);
         }

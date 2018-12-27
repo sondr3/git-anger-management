@@ -67,9 +67,9 @@
 //!
 //! Or look at the help by running `git anger-management -h`.
 #![cfg_attr(feature = "fail-on-warnings", deny(warnings))]
-#![cfg_attr(feature = "cargo-clippy", deny(clippy))]
 #![forbid(unsafe_code)]
 #![deny(
+    clippy::all,
     missing_docs,
     missing_debug_implementations,
     missing_copy_implementations,
@@ -77,16 +77,10 @@
     unused_import_braces,
     unused_allocation
 )]
-
-#[macro_use]
-extern crate lazy_static;
-extern crate hashbrown;
-extern crate indicatif;
-
 mod author;
 mod core;
 mod repo;
 
-pub use author::Author;
-pub use core::{naughty_word, split_into_clean_words};
-pub use repo::Repo;
+pub use crate::author::Author;
+pub use crate::core::{naughty_word, split_into_clean_words};
+pub use crate::repo::Repo;
