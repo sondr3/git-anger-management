@@ -1,9 +1,9 @@
 use hashbrown::HashMap;
-use prettytable::{cell, format, row, Table};
+use prettytable::{format, Cell, Row, Table};
 use std::fmt;
 
 /// A single curse with a count of how many times it occurs
-#[derive(Debug, Ord, PartialOrd, Eq, PartialEq)]
+#[derive(Debug, Ord, PartialOrd, Eq, PartialEq, Clone)]
 pub struct Curse {
     /// How many times have this curse been invoked?
     pub count: usize,
@@ -40,10 +40,24 @@ impl Curse {
         table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
         let curses = Curse::sort(curses);
 
-        table.set_titles(row!["Curse", "Count"]);
-        for curse in curses {
-            table.add_row(row![curse.curse, curse.count]);
-        }
+        // jesus this is so ugly
+        let mut heading: Vec<_> = curses
+            .clone()
+            .into_iter()
+            .map(|c| Cell::new(c.curse.as_str()))
+            .collect();
+        heading.push(Cell::new("Total"));
+        heading.insert(0, Cell::new(""));
+        table.set_titles(Row::new(heading));
+
+        let total: usize = curses.clone().into_iter().map(|c| c.count).sum();
+        let mut curses: Vec<_> = curses
+            .into_iter()
+            .map(|c| Cell::new(&format!("{}", c.count)))
+            .collect();
+        curses.push(Cell::new(&format!("{}", total)));
+        curses.insert(0, Cell::new("Overall"));
+        table.add_row(Row::new(curses));
 
         table
     }
