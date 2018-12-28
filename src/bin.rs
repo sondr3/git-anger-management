@@ -21,6 +21,9 @@ struct Cli {
     #[structopt(short, long)]
     /// Disable the progress bar
     progress: bool,
+    #[structopt(short, long)]
+    /// Only display information about repo
+    repo: bool,
     #[structopt(parse(from_os_str))]
     /// Directory to parse commits from
     directory: Option<PathBuf>,
@@ -94,9 +97,11 @@ pub fn main() -> Result<(), Box<dyn Error>> {
     }
 
     println!("{}", repo);
-    for author in repo.authors.values() {
-        if author.is_naughty() {
-            println!("{}", author);
+    if !opt.repo {
+        for author in repo.authors.values() {
+            if author.is_naughty() {
+                println!("{}", author);
+            }
         }
     }
 
