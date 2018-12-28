@@ -2,9 +2,12 @@ use hashbrown::HashMap;
 use prettytable::{cell, format, row, Table};
 use std::fmt;
 
+/// A single curse with a count of how many times it occurs
 #[derive(Debug, Ord, PartialOrd, Eq, PartialEq)]
 pub struct Curse {
+    /// How many times have this curse been invoked?
     pub count: usize,
+    /// The curses name
     pub curse: String,
 }
 
@@ -15,6 +18,7 @@ impl fmt::Display for Curse {
 }
 
 impl Curse {
+    /// Creates a new curse with a name and a count
     pub fn new(curse: impl Into<String>, count: usize) -> Self {
         Curse {
             curse: curse.into(),
@@ -22,6 +26,7 @@ impl Curse {
         }
     }
 
+    /// Create a sorted `Vec` from a HashMap of curses, sorted by counts
     fn sort(curses: &HashMap<String, Curse>) -> Vec<&Curse> {
         let mut curses: Vec<_> = curses.into_iter().map(|c| c.1).collect();
         curses.sort_unstable();
@@ -29,6 +34,7 @@ impl Curse {
         curses
     }
 
+    /// Create a pretty table that prints curses and their counts
     pub fn table(curses: &HashMap<String, Curse>) -> Table {
         let mut table = Table::new();
         table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
