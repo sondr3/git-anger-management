@@ -1,4 +1,5 @@
 use hashbrown::HashMap;
+use prettytable::{cell, format, row, Table};
 use std::fmt;
 
 #[derive(Debug, Ord, PartialOrd, Eq, PartialEq)]
@@ -9,7 +10,7 @@ pub struct Curse {
 
 impl fmt::Display for Curse {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "\t{}: {}", self.curse, self.count)
+        write!(f, "{}: {}", self.curse, self.count)
     }
 }
 
@@ -21,14 +22,23 @@ impl Curse {
         }
     }
 
-    pub fn sort(curses: &HashMap<String, Curse>) -> String {
-        let mut curses: Vec<_> = curses.iter().map(|c| c.1).collect();
+    fn sort(curses: &HashMap<String, Curse>) -> Vec<&Curse> {
+        let mut curses: Vec<_> = curses.into_iter().map(|c| c.1).collect();
         curses.sort_unstable();
         curses.reverse();
-        let mut result = String::new();
-        for curse in &curses {
-            result.push_str(&format!("{}\n", curse));
+        curses
+    }
+
+    pub fn table(curses: &HashMap<String, Curse>) -> Table {
+        let mut table = Table::new();
+        table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
+        let curses = Curse::sort(curses);
+
+        table.set_titles(row!["Curse", "Count"]);
+        for curse in curses {
+            table.add_row(row![curse.curse, curse.count]);
         }
-        result
+
+        table
     }
 }

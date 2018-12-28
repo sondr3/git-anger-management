@@ -23,7 +23,7 @@ impl fmt::Display for Author {
             self.name,
             self.total_curses,
             self.total_commits,
-            Curse::sort(&self.curses)
+            Curse::table(&self.curses)
         )
     }
 }

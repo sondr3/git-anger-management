@@ -25,7 +25,7 @@ impl fmt::Display for Repo {
             self.name,
             self.total_curses,
             self.total_commits,
-            Curse::sort(&self.curses)
+            Curse::table(&self.curses)
         )
     }
 }
