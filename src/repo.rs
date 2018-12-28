@@ -1,4 +1,4 @@
-use crate::author::Author;
+use crate::{author::Author, curse::Curse};
 use hashbrown::HashMap;
 use std::fmt;
 
@@ -12,7 +12,7 @@ pub struct Repo {
     /// Count of the total amount of curses used in the commits.
     pub total_curses: usize,
     /// HashMap of all the naughty words used by the authors.
-    pub curses: HashMap<String, usize>,
+    pub curses: HashMap<String, Curse>,
     /// HashMap of all the authors that have been committed.
     pub authors: HashMap<String, Author>,
 }
@@ -21,8 +21,11 @@ impl fmt::Display for Repo {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "{}: ({}/{}) naughty commits/commits\n{:#?}",
-            self.name, self.total_curses, self.total_commits, self.curses
+            "{}: ({}/{}) naughty commits/commits:\n{}",
+            self.name,
+            self.total_curses,
+            self.total_commits,
+            Curse::sort(&self.curses)
         )
     }
 }
@@ -54,11 +57,11 @@ impl Repo {
     /// Counts all the naughty words used by authors.
     pub fn count_curses(&mut self) {
         for author in self.authors.values() {
-            for (curse, count) in &author.curses {
+            for (name, curse) in &author.curses {
                 self.curses
-                    .entry(curse.to_string())
-                    .and_modify(|c| *c += count)
-                    .or_insert(*count);
+                    .entry(name.to_string())
+                    .and_modify(|c| c.count += curse.count)
+                    .or_insert(Curse::new(name.as_str(), curse.count));
             }
         }
     }

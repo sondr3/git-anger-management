@@ -82,6 +82,7 @@
 )]
 mod author;
 mod core;
+mod curse;
 mod repo;
 
 pub use crate::author::Author;

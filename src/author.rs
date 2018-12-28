@@ -1,3 +1,4 @@
+use crate::curse::Curse;
 use hashbrown::HashMap;
 use std::fmt;
 
@@ -11,15 +12,18 @@ pub struct Author {
     /// Total count of curses used by author.
     pub total_curses: usize,
     /// HashMap of all the curses the author used.
-    pub curses: HashMap<String, usize>,
+    pub curses: HashMap<String, Curse>,
 }
 
 impl fmt::Display for Author {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "{}: ({}/{}) naughty commits/commits\n{:#?}",
-            self.name, self.total_curses, self.total_commits, self.curses
+            "{}: ({}/{}) naughty commits/commits\n{}",
+            self.name,
+            self.total_curses,
+            self.total_commits,
+            Curse::sort(&self.curses)
         )
     }
 }
@@ -39,9 +43,9 @@ impl Author {
     pub fn update_occurrence(&mut self, curse: &str) {
         self.curses
             .get_mut(curse)
-            .map(|c| *c += 1)
+            .map(|c| c.count += 1)
             .unwrap_or_else(|| {
-                self.curses.insert(curse.to_owned(), 1);
+                self.curses.insert(curse.into(), Curse::new(curse, 1));
             })
     }
 
