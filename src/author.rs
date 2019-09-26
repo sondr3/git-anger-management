@@ -1,5 +1,5 @@
 use crate::curse::Curse;
-use hashbrown::HashMap;
+use std::collections::HashMap;
 use std::fmt;
 
 /// An author of a git commit.

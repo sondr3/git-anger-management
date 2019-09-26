@@ -1,5 +1,5 @@
-use hashbrown::HashSet;
 use lazy_static::lazy_static;
+use std::collections::HashSet;
 
 pub static CURSES_FILE: &str = include_str!("words.txt");
 lazy_static! {

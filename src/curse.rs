@@ -1,5 +1,5 @@
-use hashbrown::HashMap;
 use prettytable::{format, Cell, Row, Table};
+use std::collections::HashMap;
 use std::fmt;
 
 /// A single curse with a count of how many times it occurs
@@ -28,7 +28,7 @@ impl Curse {
 
     /// Create a sorted `Vec` from a HashMap of curses, sorted by counts
     fn sort(curses: &HashMap<String, Curse>) -> Vec<&Curse> {
-        let mut curses: Vec<_> = curses.into_iter().map(|c| c.1).collect();
+        let mut curses: Vec<_> = curses.iter().map(|c| c.1).collect();
         curses.sort_unstable();
         curses.reverse();
         curses

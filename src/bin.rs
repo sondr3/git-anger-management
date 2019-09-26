@@ -12,7 +12,7 @@ use structopt::StructOpt;
 #[structopt(
     name = "git anger-management",
     about = "Ever wondered how angry your commits are? Look no further...",
-    raw(global_settings = "&[AppSettings::ColoredHelp]")
+    global_settings(&[AppSettings::ColoredHelp])
 )]
 struct Cli {
     #[structopt(short, long)]
@@ -60,7 +60,12 @@ pub fn main() -> Result<(), Box<dyn Error>> {
                 .progress_chars("█▉▊▋▌▍▎▏ "),
         );
     }
-    let mut repo = Repo::new(path.file_name().unwrap().to_str().unwrap());
+
+    let mut repo = Repo::new(match path.file_name() {
+        Some(path) => path.to_str().unwrap().to_owned(),
+        None => env::current_dir()?.to_str().unwrap().to_owned(),
+    });
+
     for commit in &commits {
         if let (Some(author_name), Some(commit_message)) = (
             commit.author().name(),

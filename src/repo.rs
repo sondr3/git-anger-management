@@ -1,5 +1,5 @@
 use crate::{author::Author, curse::Curse};
-use hashbrown::HashMap;
+use std::collections::HashMap;
 use std::fmt;
 
 /// A simple representation of a git repository.
@@ -61,7 +61,7 @@ impl Repo {
                 self.curses
                     .entry(name.to_string())
                     .and_modify(|c| c.count += curse.count)
-                    .or_insert(Curse::new(name.as_str(), curse.count));
+                    .or_insert_with(|| Curse::new(name.as_str(), curse.count));
             }
         }
     }
