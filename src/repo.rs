@@ -60,7 +60,7 @@ impl Repo {
         }
     }
 
-    /// wat
+    /// Add curses that authors haven't muttered yet, for display purposes only
     pub fn add_missing(&mut self) {
         let curses = self.curses.clone();
         for (_, author) in self.authors.iter_mut() {
@@ -68,14 +68,23 @@ impl Repo {
         }
     }
 
+    /// Count total naughty authors in repository.
+    fn total_naughty_authors(&self) -> usize {
+        self.authors.values().filter(|a| a.is_naughty()).count()
+    }
+
+    /// Build a table to display naughty authors and their words.
     fn build_table(&self) -> String {
         let mut table = Table::new();
-        table.set_format(*format::consts::FORMAT_CLEAN);
-        Repo::table_headers(&mut table, &self.curses);
+        table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
+        self.table_headers(&mut table);
         for author in self.authors.values() {
             if author.is_naughty() {
                 Repo::add_author(&mut table, &author.curses, &author.name);
             }
+        }
+        if self.total_naughty_authors() > 1 {
+            self.total_repo(&mut table);
         }
 
         table.to_string()
@@ -89,18 +98,20 @@ impl Repo {
         curses
     }
 
-    fn table_headers(table: &mut Table, curses: &HashMap<String, usize>) {
-        let curses = Repo::sort(curses);
+    /// Add headers to a table
+    fn table_headers(&self, table: &mut Table) {
+        let curses = Repo::sort(&self.curses);
         let mut heading: Vec<_> = curses
             .clone()
             .into_iter()
             .map(|(name, _)| Cell::new(name))
             .collect();
+        heading.insert(0, Cell::new("Author"));
         heading.push(Cell::new("Total"));
-        heading.insert(0, Cell::new(""));
         table.set_titles(Row::new(heading));
     }
 
+    /// Add an author to a table
     fn add_author(table: &mut Table, curses: &HashMap<String, usize>, author: &str) {
         let curses = Repo::sort(curses);
         let total: usize = curses.clone().into_iter().map(|(_, count)| count).sum();
@@ -108,8 +119,21 @@ impl Repo {
             .into_iter()
             .map(|(_, count)| Cell::new(&format!("{}", count)))
             .collect();
-        curses.push(Cell::new(&format!("{}", total)));
         curses.insert(0, Cell::new(author));
+        curses.push(Cell::new(&format!("{}", total)));
+        table.add_row(Row::new(curses));
+    }
+
+    /// Add the total amount of curses muttered in the repository
+    fn total_repo(&self, table: &mut Table) {
+        let curses = Repo::sort(&self.curses);
+        let total: usize = curses.clone().into_iter().map(|(_, count)| count).sum();
+        let mut curses: Vec<_> = curses
+            .into_iter()
+            .map(|(_, count)| Cell::new(&format!("{}", count)))
+            .collect();
+        curses.insert(0, Cell::new("Total"));
+        curses.push(Cell::new(&format!("{}", total)));
         table.add_row(Row::new(curses));
     }
 }
