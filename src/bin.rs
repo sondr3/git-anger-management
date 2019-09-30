@@ -102,13 +102,6 @@ pub fn main() -> Result<(), Box<dyn Error>> {
     }
 
     println!("{}", repo);
-    if !opt.repo {
-        for author in repo.authors.values() {
-            if author.is_naughty() {
-                println!("{}", author);
-            }
-        }
-    }
 
     Ok(())
 }

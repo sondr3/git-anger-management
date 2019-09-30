@@ -1,6 +1,5 @@
 use crate::curse::Curse;
 use std::collections::HashMap;
-use std::fmt;
 
 /// An author of a git commit.
 #[derive(Debug)]
@@ -13,19 +12,6 @@ pub struct Author {
     pub total_curses: usize,
     /// HashMap of all the curses the author used.
     pub curses: HashMap<String, Curse>,
-}
-
-impl fmt::Display for Author {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}: ({}/{}) naughty commits/commits\n{}",
-            self.name,
-            self.total_curses,
-            self.total_commits,
-            Curse::table(&self.curses)
-        )
-    }
 }
 
 impl Author {
@@ -47,6 +33,15 @@ impl Author {
             .unwrap_or_else(|| {
                 self.curses.insert(curse.into(), Curse::new(curse, 1));
             })
+    }
+
+    /// Add curses author has not muttered (yet).
+    pub fn add_missing(&mut self, curses: &HashMap<String, Curse>) {
+        for curse in curses.keys() {
+            if !self.curses.contains_key(curse) {
+                self.curses.insert(curse.into(), Curse::new(curse, 0));
+            }
+        }
     }
 
     /// `git-anger-management` knows if you've been naughty or not

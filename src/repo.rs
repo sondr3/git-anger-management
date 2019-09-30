@@ -1,4 +1,5 @@
 use crate::{author::Author, curse::Curse};
+use prettytable::{format, Cell, Row, Table};
 use std::collections::HashMap;
 use std::fmt;
 
@@ -19,14 +20,7 @@ pub struct Repo {
 
 impl fmt::Display for Repo {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}: ({}/{}) naughty commits/commits:\n{}",
-            self.name,
-            self.total_curses,
-            self.total_commits,
-            Curse::table(&self.curses)
-        )
+        write!(f, "{}", self.build_table())
     }
 }
 
@@ -64,5 +58,58 @@ impl Repo {
                     .or_insert_with(|| Curse::new(name.as_str(), curse.count));
             }
         }
+    }
+
+    /// wat
+    pub fn add_missing(&mut self) {
+        let curses = self.curses.clone();
+        for (_, author) in self.authors.iter_mut() {
+            author.add_missing(&curses);
+        }
+    }
+
+    fn build_table(&self) -> String {
+        let mut table = Table::new();
+        table.set_format(*format::consts::FORMAT_CLEAN);
+        Repo::table_headers(&mut table, &self.curses);
+        for author in self.authors.values() {
+            if author.is_naughty() {
+                Repo::add_author(&mut table, &author.curses, &author.name);
+            }
+        }
+
+        table.to_string()
+    }
+
+    /// Create a sorted `Vec` from a HashMap of curses, sorted by counts
+    fn sort(curses: &HashMap<String, Curse>) -> Vec<&Curse> {
+        let mut curses: Vec<_> = curses.iter().map(|c| c.1).collect();
+        curses.sort_unstable();
+        curses.reverse();
+        curses
+    }
+
+    fn table_headers(table: &mut Table, curses: &HashMap<String, Curse>) {
+        let curses = Repo::sort(curses);
+        let mut heading: Vec<_> = curses
+            .clone()
+            .into_iter()
+            .map(|c| Cell::new(c.curse.as_str()))
+            .collect();
+        heading.push(Cell::new("Total"));
+        heading.insert(0, Cell::new(""));
+        table.set_titles(Row::new(heading));
+    }
+
+    fn add_author(table: &mut Table, curses: &HashMap<String, Curse>, author: &str) {
+        let curses = Repo::sort(curses);
+        let total: usize = curses.clone().into_iter().map(|c| c.count).sum();
+        let mut curses: Vec<_> = curses
+            .into_iter()
+            .map(|c| Cell::new(&format!("{}", c.count)))
+            .collect();
+        curses.push(Cell::new(&format!("{}", total)));
+        curses.insert(0, Cell::new(author));
+        table.add_row(Row::new(curses));
     }
 }
