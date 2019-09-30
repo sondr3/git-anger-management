@@ -82,10 +82,8 @@
 )]
 mod author;
 mod core;
-mod curse;
 mod repo;
 
 pub use crate::author::Author;
 pub use crate::core::{naughty_word, split_into_clean_words};
-pub use crate::curse::Curse;
 pub use crate::repo::Repo;

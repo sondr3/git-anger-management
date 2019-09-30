@@ -1,4 +1,3 @@
-use crate::curse::Curse;
 use std::collections::HashMap;
 
 /// An author of a git commit.
@@ -11,7 +10,7 @@ pub struct Author {
     /// Total count of curses used by author.
     pub total_curses: usize,
     /// HashMap of all the curses the author used.
-    pub curses: HashMap<String, Curse>,
+    pub curses: HashMap<String, usize>,
 }
 
 impl Author {
@@ -29,17 +28,17 @@ impl Author {
     pub fn update_occurrence(&mut self, curse: &str) {
         self.curses
             .get_mut(curse)
-            .map(|c| c.count += 1)
+            .map(|c| *c += 1)
             .unwrap_or_else(|| {
-                self.curses.insert(curse.into(), Curse::new(curse, 1));
+                self.curses.insert(curse.into(), 1);
             })
     }
 
     /// Add curses author has not muttered (yet).
-    pub fn add_missing(&mut self, curses: &HashMap<String, Curse>) {
+    pub fn add_missing(&mut self, curses: &HashMap<String, usize>) {
         for curse in curses.keys() {
             if !self.curses.contains_key(curse) {
-                self.curses.insert(curse.into(), Curse::new(curse, 0));
+                self.curses.insert(curse.into(), 0);
             }
         }
     }
