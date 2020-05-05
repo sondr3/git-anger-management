@@ -1,6 +1,6 @@
+use console::Term;
 use git2::{Commit, Repository};
 use git_anger_management::{naughty_word, split_into_clean_words, Repo};
-use indicatif::{ProgressBar, ProgressStyle};
 use std::env;
 use std::error::Error;
 use std::path::PathBuf;
@@ -19,9 +19,6 @@ struct Cli {
     /// Verbose output
     verbose: bool,
     #[structopt(short, long)]
-    /// Disable the progress bar
-    progress: bool,
-    #[structopt(short, long)]
     /// Only display information about repo
     repo: bool,
     #[structopt(parse(from_os_str))]
@@ -37,7 +34,6 @@ pub fn main() -> Result<(), Box<dyn Error>> {
         None => env::current_dir()?,
     };
     let verbose = opt.verbose;
-    let progress = opt.progress;
 
     let repo = Repository::open(&path)?;
     let commits = {
@@ -51,21 +47,14 @@ pub fn main() -> Result<(), Box<dyn Error>> {
         commits
     };
 
-    let mut progress_bar = ProgressBar::hidden();
-    if !progress {
-        progress_bar = ProgressBar::new(commits.len() as u64);
-        progress_bar.set_style(
-            ProgressStyle::default_bar()
-                .template("[{elapsed}] ▕{bar:40}▏{msg} ({eta})")
-                .progress_chars("█▉▊▋▌▍▎▏ "),
-        );
-    }
-
     let mut repo = Repo::new(match path.file_name() {
         Some(path) => path.to_str().unwrap().to_owned(),
         None => env::current_dir()?.to_str().unwrap().to_owned(),
     });
 
+    let term = Term::stderr();
+
+    term.write_line("Crunching commits...")?;
     for commit in &commits {
         if let (Some(author_name), Some(commit_message)) = (
             commit.author().name(),
@@ -85,8 +74,6 @@ pub fn main() -> Result<(), Box<dyn Error>> {
             }
             repo.total_commits += 1;
             repo.total_curses += curses_added;
-            progress_bar.set_message(&format!("commit {:?}", commit.id()));
-            progress_bar.inc(1);
         } else {
             eprintln!(
                 "Skipping commit {:?} because either the commit author or message is missing",
@@ -95,13 +82,13 @@ pub fn main() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    progress_bar.finish_and_clear();
+    term.clear_last_lines(1)?;
     repo.count_curses();
     if verbose {
         println!("Took {:?} to parse {}", start.elapsed(), repo.name);
     }
 
-    println!("{}", repo);
+    print!("{}", repo);
 
     Ok(())
 }

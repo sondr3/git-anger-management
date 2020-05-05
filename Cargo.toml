@@ -23,11 +23,8 @@ lto = "thin"
 fail-on-warnings = []
 
 [dependencies]
-structopt = "0.3"
-lazy_static = "1.4"
-indicatif = "0.12"
-prettytable-rs = "0.8"
-
-[dependencies.git2]
-version = "0.10.1"
-default-features = false
+structopt = "0.3.14"
+prettytable-rs = "0.8.0"
+once_cell = "1.3.1"
+git2 = { version = "0.13.5", default-features = false }
+console = "0.11.2"

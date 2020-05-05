@@ -1,9 +1,10 @@
-use lazy_static::lazy_static;
+use once_cell::sync::OnceCell;
 use std::collections::HashSet;
 
 pub static CURSES_FILE: &str = include_str!("words.txt");
-lazy_static! {
-    pub static ref CURSES: HashSet<&'static str> = CURSES_FILE.lines().collect();
+fn curses() -> &'static HashSet<&'static str> {
+    static INSTANCE: OnceCell<HashSet<&'static str>> = OnceCell::new();
+    INSTANCE.get_or_init(|| CURSES_FILE.lines().collect())
 }
 
 /// Cleans a string and returns a list containing the cleaned up words.
@@ -19,7 +20,7 @@ pub fn split_into_clean_words(input: &str) -> impl Iterator<Item = &str> {
 
 /// Checks if a word is naughty.
 pub fn naughty_word(word: &str) -> bool {
-    CURSES.contains(&word)
+    curses().contains(&word)
 }
 
 #[cfg(test)]
