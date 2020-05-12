@@ -6,7 +6,7 @@ pub static CURSES_FILE: &str = include_str!("words.txt");
 
 fn curses() -> &'static HashSet<&'static str> {
     static INSTANCE: OnceCell<HashSet<&'static str>> = OnceCell::new();
-    INSTANCE.get_or_init(|| CURSES_FILE.lines().collect())
+    INSTANCE.get_or_init(|| CURSES_FILE.lines().map(|l| l.trim()).collect())
 }
 
 /// Cleans a string and returns a list containing the cleaned up words.
@@ -33,6 +33,7 @@ mod test {
     fn test_naughty_words() {
         assert!(naughty_word("fuck"));
         assert!(naughty_word("cyberfuckers"));
+        assert!(naughty_word("shitty"));
         assert!(!naughty_word("pretty"));
     }
 
