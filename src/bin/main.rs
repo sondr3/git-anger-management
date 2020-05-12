@@ -31,7 +31,9 @@ pub fn main() -> Result<(), Box<dyn Error>> {
         Some(directory) => directory,
         None => env::current_dir()?,
     };
+
     let verbose = opt.verbose;
+    let json = opt.json;
 
     let repo = Repo::new(&path)?;
     let term = Term::stderr();
@@ -42,7 +44,9 @@ pub fn main() -> Result<(), Box<dyn Error>> {
         println!("Took {:?} to parse {}", start.elapsed(), repo.name);
     }
 
-    print!("{}", repo);
+    if !json {
+        repo.print_list()?;
+    }
 
     Ok(())
 }
