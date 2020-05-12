@@ -109,8 +109,7 @@ impl Repo {
     /// Create a sorted `Vec` from a HashMap of curses, sorted by counts
     fn sort(curses: &HashMap<String, usize>) -> Vec<(String, usize)> {
         let mut curses: Vec<(&String, &usize)> = curses.iter().collect();
-        curses.sort_by(|a, b| a.1.cmp(b.1));
-        curses.reverse();
+        curses.sort_by(|(a, _), (b, _)| a.cmp(b));
         let curses: Vec<_> = curses
             .iter()
             .map(|(c, i)| ((*c).to_string(), **i))
@@ -179,7 +178,7 @@ impl Repo {
                         out.push_str("0\t");
                     }
                 }
-                out.push_str(&curses.iter().map(|(_, c)| *c).sum::<usize>().to_string());
+                out.push_str(&author.curses.values().sum::<usize>().to_string());
 
                 writeln!(tw, "{}", out)?;
             }
@@ -194,7 +193,6 @@ impl Repo {
         curses: &[(String, usize)],
     ) -> Result<(), Box<dyn Error>> {
         let mut out = String::new();
-        let total: usize = curses.iter().map(|(_, c)| c).sum();
 
         out.push_str(&["Overall", "\t"].concat());
 
@@ -202,7 +200,7 @@ impl Repo {
             .iter()
             .for_each(|(_, count)| out.push_str(&[&count.to_string(), "\t"].concat()));
 
-        out.push_str(&total.to_string());
+        out.push_str(&self.total_curses.to_string());
 
         writeln!(tw, "{}", out)?;
 
