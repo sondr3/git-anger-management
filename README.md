@@ -17,10 +17,16 @@ it all the time, and I wanted to know just how angry I am at my code.
 
 # Installation
 
-Make sure you have Rust installed (I recommend installing via
-[rustup](https://rustup.rs/)), then run `cargo install git-anger-management`.
-You can now check how naughty you are by running `git anger-management` in your
-repository root where you want to gaze upon the authors naughtiness.
+There are two possible ways to install the binary for this:
+
+1. Installation via `cargo`. For this you need to have installed (I recommend
+   installing via [rustup](https://rustup.rs/)), then run `cargo install
+   git-anger-management`. As long as you have `~/.cargo/bin` in your `$PATH` you
+   can now use this program by running it in your terminal.
+2. Download the correct binary from the
+   [releases](https://github.com/sondr3/git-anger-management/releases), extract
+   it and copy the file to somewhere on your \$PATH and make it executable:
+   `chmod +x git-anger-management`.
 
 ## Usage
 
