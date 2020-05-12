@@ -1,4 +1,4 @@
-# git-anger-management [![Build Status](https://travis-ci.com/sondr3/git-anger-management.svg?token=jVZ9BLfdPx6kBm4z8gXS&branch=master)](https://travis-ci.com/sondr3/git-anger-management) [![Crates.io](https://img.shields.io/crates/v/git-anger-management.svg)](https://crates.io/crates/git-anger-management)
+# git-anger-management ![pipeline](https://github.com/sondr3/git-anger-management/workflows/pipeline/badge.svg) [![Crates.io](https://img.shields.io/crates/v/git-anger-management.svg)](https://crates.io/crates/git-anger-management)
 
 ## What
 
