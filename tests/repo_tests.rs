@@ -1,6 +1,6 @@
 use git2::Repository;
 use git_anger_management::repo::Repo;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 #[test]
 fn test_commit_count() {
@@ -11,10 +11,7 @@ fn test_commit_count() {
 
 #[test]
 fn test_example_repo() {
-    let repo = Repository::open(Path::new("./tests/repo").to_path_buf()).unwrap();
-    let commits = Repo::commits(&repo).unwrap();
-    let mut repo = Repo::new("repo");
-    repo.build(commits);
+    let repo = Repo::new(Path::new("./tests/repo")).unwrap();
 
     assert_eq!(repo.authors.len(), 2);
     assert_eq!(repo.total_commits, 4);

@@ -1,10 +1,10 @@
-use crate::author::Author;
-use crate::core::{naughty_word, split_into_clean_words};
+use crate::{
+    author::Author,
+    core::{naughty_word, split_into_clean_words},
+};
 use git2::{Commit, Repository};
 use prettytable::{format, Cell, Row, Table};
-use std::collections::HashMap;
-use std::error::Error;
-use std::fmt;
+use std::{collections::HashMap, env, error::Error, fmt, path::Path};
 
 /// A simple representation of a git repository.
 #[derive(Debug)]
@@ -29,14 +29,27 @@ impl fmt::Display for Repo {
 
 impl Repo {
     /// Creates a new and empty repository.
-    pub fn new(name: impl Into<String>) -> Self {
-        Repo {
-            name: name.into(),
+    pub fn new(path: &Path) -> Result<Self, Box<dyn Error>> {
+        let repo = Repository::open(path)?;
+        let commits = Repo::commits(&repo)?;
+
+        let repo = match path.file_name() {
+            Some(path) => path.to_str().unwrap().to_owned(),
+            None => env::current_dir()?.to_str().unwrap().to_owned(),
+        };
+
+        let mut repo = Repo {
+            name: repo.into(),
             total_commits: 0,
             total_curses: 0,
             curses: HashMap::new(),
             authors: HashMap::new(),
-        }
+        };
+
+        repo.build(commits);
+        repo.count_curses();
+
+        Ok(repo)
     }
 
     /// Checks if an author exists and creates a new author if she/he doesn't

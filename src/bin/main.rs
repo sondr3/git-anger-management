@@ -1,12 +1,7 @@
 use console::Term;
-use git2::Repository;
 use git_anger_management::repo::Repo;
-use std::env;
-use std::error::Error;
-use std::path::PathBuf;
-use std::time::Instant;
-use structopt::clap::AppSettings;
-use structopt::StructOpt;
+use std::{env, error::Error, path::PathBuf, time::Instant};
+use structopt::{clap::AppSettings, StructOpt};
 
 #[derive(StructOpt, Debug)]
 #[structopt(
@@ -38,21 +33,11 @@ pub fn main() -> Result<(), Box<dyn Error>> {
     };
     let verbose = opt.verbose;
 
-    let repo = Repository::open(&path)?;
-    let commits = Repo::commits(&repo)?;
-
-    let mut repo = Repo::new(match path.file_name() {
-        Some(path) => path.to_str().unwrap().to_owned(),
-        None => env::current_dir()?.to_str().unwrap().to_owned(),
-    });
-
+    let repo = Repo::new(&path)?;
     let term = Term::stderr();
 
     term.write_line("Crunching commits...")?;
-    repo.build(commits);
-
     term.clear_last_lines(1)?;
-    repo.count_curses();
     if verbose {
         println!("Took {:?} to parse {}", start.elapsed(), repo.name);
     }
