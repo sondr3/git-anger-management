@@ -1,6 +1,9 @@
 use crate::author::Author;
+use crate::{naughty_word, split_into_clean_words};
+use git2::{Commit, Repository};
 use prettytable::{format, Cell, Row, Table};
 use std::collections::HashMap;
+use std::error::Error;
 use std::fmt;
 
 /// A simple representation of a git repository.
@@ -135,5 +138,48 @@ impl Repo {
         curses.insert(0, Cell::new("Total"));
         curses.push(Cell::new(&format!("{}", total)));
         table.add_row(Row::new(curses));
+    }
+
+    /// Build a list of commits by walking the history of a repository.
+    pub fn commits(repo: &Repository) -> Result<Vec<Commit>, Box<dyn Error>> {
+        let mut revwalk = repo.revwalk()?;
+        let mut commits: Vec<Commit> = Vec::new();
+        revwalk.push_head()?;
+        for commit_id in revwalk {
+            let commit = repo.find_commit(commit_id?)?;
+            commits.push(commit);
+        }
+
+        Ok(commits)
+    }
+
+    /// Documentation dammit!
+    pub fn build(&mut self, commits: Vec<Commit>) {
+        for commit in &commits {
+            if let (Some(author_name), Some(commit_message)) = (
+                commit.author().name(),
+                commit.message().map(|w| w.to_lowercase()),
+            ) {
+                let mut curses_added = 0;
+                {
+                    let author = self.author(author_name);
+                    author.total_commits += 1;
+                    for word in split_into_clean_words(&commit_message) {
+                        if naughty_word(word) {
+                            author.total_curses += 1;
+                            curses_added += 1;
+                            author.update_occurrence(word);
+                        }
+                    }
+                }
+                self.total_commits += 1;
+                self.total_curses += curses_added;
+            } else {
+                eprintln!(
+                    "Skipping commit {:?} because either the commit author or message is missing",
+                    commit
+                );
+            }
+        }
     }
 }
