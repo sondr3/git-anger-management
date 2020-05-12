@@ -84,7 +84,7 @@ dependencies = [
 
 [[package]]
 name = "git-anger-management"
-version = "0.6.0"
+version = "0.7.0"
 dependencies = [
  "console 0.11.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "git2 0.13.5 (registry+https://github.com/rust-lang/crates.io-index)",
