@@ -1,4 +1,29 @@
-# git-anger-management [![pipeline](https://github.com/sondr3/git-anger-management/workflows/pipeline/badge.svg)](https://github.com/sondr3/git-anger-management/actions) [![Crates.io](https://img.shields.io/crates/v/git-anger-management.svg)](https://crates.io/crates/git-anger-management) [![Docs.rs](https://docs.rs/git-anger-management/badge.svg)](https://docs.rs/crate/git-anger-management/)
+<h1 align="center">git-anger-management</h1>
+<p align="center">
+   <a href="https://github.com/sondr3/git-anger-management/actions"><img alt="GitHub Actions Status" src="https://github.com/sondr3/git-anger-management/workflows/pipeline/badge.svg" /></a>
+   <br />
+   <a href="https://crates.io/crates/git-anger-management"><img alt="Crates.io" src="https://img.shields.io/crates/v/git-anger-management?label=binary"></a>
+   <a href="https://docs.rs/crate/git-anger-management/"><img alt="Binary documentation" src="https://docs.rs/git-anger-management/badge.svg"></a>
+   <a href="https://crates.io/crates/git-anger-library"><img alt="Crates.io" src="https://img.shields.io/crates/v/git-anger-library?label=library"></a>
+   <a href="https://docs.rs/crate/git-anger-library/"><img alt="Library documentation" src="https://docs.rs/git-anger-library/badge.svg"></a>
+</p>
+
+<p align="center">
+   <strong>A fun little utility to figure out how naughty projects are.</strong>
+</p>
+
+<details>
+<summary>Table of Contents</summary>
+<br />
+
+## Table of Contents
+
+- [What](#what)
+- [Why](#why)
+- [Installation](#installation)
+    - [Usage](#usage)
+- [License](#license)
+</details>
 
 ## What
 

@@ -115,9 +115,9 @@ jobs:
           toolchain: stable
           override: true
 
-  cargo_publish:
-    if: startsWith(github.ref, 'refs/tags/v')
-    name: Publish Cargo Package
+  publish_binary:
+    if: startsWith(github.ref, 'refs/tags/v') && endsWith(github.ref, 'bin')
+    name: Publish git-anger-management
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -127,14 +127,30 @@ jobs:
           toolchain: stable
           override: true
       - run: cargo login $CRATES_IO_TOKEN
-      - run: |
-          cd bin
-          cargo publish
+      - run: cargo publish --manifest-path bin/Cargo.toml
+          cargo publish --manifest-path lib/Cargo.toml
+    env:
+      CRATES_IO_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
+
+  publish_library:
+    if: startsWith(github.ref, 'refs/tags/v') && contains(github.ref, 'lib')
+    name: Publish git-anger-library
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - run: cargo login $CRATES_IO_TOKEN
+      - run: cargo publish --manifest-path bin/Cargo.toml
+          cargo publish --manifest-path lib/Cargo.toml
     env:
       CRATES_IO_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
 
   github_build:
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v') && contains(github.ref, 'bin')
     name: Build release binaries
     strategy:
       fail-fast: false
@@ -207,8 +223,8 @@ jobs:
           name: ${{ matrix.name }}
           path: ${{ matrix.name }}
 
-  github_release:
-    if: startsWith(github.ref, 'refs/tags/v')
+  github_release_binary:
+    if: startsWith(github.ref, 'refs/tags/v') && contains(github.ref, 'bin')
     name: Create GitHub Release
     needs: github_build
     runs-on: ubuntu-latest
