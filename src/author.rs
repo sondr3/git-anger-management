@@ -1,7 +1,8 @@
+use serde::Serialize;
 use std::collections::HashMap;
 
 /// An author of a git commit.
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct Author {
     /// Name of the author.
     pub name: String,

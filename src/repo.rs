@@ -3,12 +3,12 @@ use crate::{
     core::{naughty_word, split_into_clean_words},
 };
 use git2::{Commit, Repository};
-use std::io::Write;
-use std::{collections::HashMap, env, error::Error, io, path::Path};
+use serde::Serialize;
+use std::{collections::HashMap, env, error::Error, io, io::Write, path::Path};
 use tabwriter::TabWriter;
 
 /// A simple representation of a git repository.
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct Repo {
     /// Name of the repository.
     pub name: String,
@@ -76,6 +76,15 @@ impl Repo {
         self.authors.values().filter(|a| a.is_naughty()).count()
     }
 
+    /// Serialize the `Repo` struct into a JSON-object and print it.
+    pub fn print_json(&self) -> Result<(), Box<dyn Error>> {
+        let serialized = serde_json::to_string(&self)?;
+        write!(io::stdout(), "{}", serialized)?;
+        io::stdout().flush()?;
+
+        Ok(())
+    }
+
     /// Build a table to display naughty authors and their words.
     pub fn print_list(&self) -> Result<(), Box<dyn Error>> {
         let mut tw = TabWriter::new(vec![]);
@@ -130,6 +139,7 @@ impl Repo {
         Ok(())
     }
 
+    /// Add separators (`----`) to a table based on word lengths.
     fn table_separators(
         &self,
         tw: &mut TabWriter<Vec<u8>>,
@@ -149,6 +159,7 @@ impl Repo {
         Ok(())
     }
 
+    /// Add all the naughty authors to the table.
     fn table_authors(
         &self,
         tw: &mut TabWriter<Vec<u8>>,
@@ -179,6 +190,7 @@ impl Repo {
         Ok(())
     }
 
+    /// Sum up the total naughty count and print it.
     fn table_total(
         &self,
         tw: &mut TabWriter<Vec<u8>>,
@@ -212,7 +224,8 @@ impl Repo {
         Ok(commits)
     }
 
-    /// Documentation dammit!
+    /// Iterate over all commits, finding authors who have been naughty and
+    /// keep track of them.
     pub fn build(&mut self, commits: Vec<Commit>) {
         for commit in &commits {
             if let (Some(author_name), Some(commit_message)) = (

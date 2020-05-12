@@ -44,7 +44,9 @@ pub fn main() -> Result<(), Box<dyn Error>> {
         println!("Took {:?} to parse {}", start.elapsed(), repo.name);
     }
 
-    if !json {
+    if json {
+        repo.print_json()?;
+    } else {
         repo.print_list()?;
     }
 
