@@ -1,0 +1,18 @@
+[package]
+name = "git-anger-management"
+version = "0.7.0"
+edition = "2018"
+authors = ["Sondre Nilsen <nilsen.sondre@gmail.com>"]
+description = "Count your naughty words in git commit messages"
+repository = "https://github.com/sondr3/git-anger-management"
+documentation = "https://docs.rs/crate/git-anger-lib/"
+homepage = "https://github.com/sondr3/git-anger-management"
+readme = "../README.md"
+license = "GPL-3.0-or-later"
+keywords = ["git", "useless", "fun", "anger-management"]
+categories = ["command-line-utilities"]
+
+[dependencies]
+structopt = "0.3.14"
+console = "0.11.2"
+git-anger-library = { path = "../lib", version = "0.7.0" }

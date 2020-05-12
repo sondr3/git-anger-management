@@ -1,4 +1,4 @@
-# git-anger-management ![pipeline](https://github.com/sondr3/git-anger-management/workflows/pipeline/badge.svg) [![Crates.io](https://img.shields.io/crates/v/git-anger-management.svg)](https://crates.io/crates/git-anger-management) [![Docs.rs](https://docs.rs/git-anger-management/badge.svg)](https://docs.rs/crate/git-anger-management/)
+# git-anger-management [![pipeline](https://github.com/sondr3/git-anger-management/workflows/pipeline/badge.svg)](https://github.com/sondr3/git-anger-management/actions) [![Crates.io](https://img.shields.io/crates/v/git-anger-management.svg)](https://crates.io/crates/git-anger-management) [![Docs.rs](https://docs.rs/git-anger-management/badge.svg)](https://docs.rs/crate/git-anger-management/)
 
 ## What
 

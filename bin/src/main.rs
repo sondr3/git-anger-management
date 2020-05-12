@@ -1,5 +1,5 @@
 use console::Term;
-use git_anger_management::repo::Repo;
+use git_anger_library::repo::Repo;
 use std::{env, error::Error, path::PathBuf, time::Instant};
 use structopt::{clap::AppSettings, StructOpt};
 
