@@ -71,14 +71,6 @@ impl Repo {
         }
     }
 
-    /// Add curses that authors haven't muttered yet, for display purposes only
-    pub fn add_missing(&mut self) {
-        let curses = self.curses.clone();
-        for (_, author) in self.authors.iter_mut() {
-            author.add_missing(&curses);
-        }
-    }
-
     /// Count total naughty authors in repository.
     fn total_naughty_authors(&self) -> usize {
         self.authors.values().filter(|a| a.is_naughty()).count()

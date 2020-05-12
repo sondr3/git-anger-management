@@ -34,15 +34,6 @@ impl Author {
             })
     }
 
-    /// Add curses author has not muttered (yet).
-    pub fn add_missing(&mut self, curses: &HashMap<String, usize>) {
-        for curse in curses.keys() {
-            if !self.curses.contains_key(curse) {
-                self.curses.insert(curse.into(), 0);
-            }
-        }
-    }
-
     /// `git-anger-management` knows if you've been naughty or not
     pub fn is_naughty(&self) -> bool {
         !self.curses.is_empty()
