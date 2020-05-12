@@ -1,7 +1,9 @@
 use once_cell::sync::OnceCell;
 use std::collections::HashSet;
 
+/// Statically include the word list for curse words
 pub static CURSES_FILE: &str = include_str!("words.txt");
+
 fn curses() -> &'static HashSet<&'static str> {
     static INSTANCE: OnceCell<HashSet<&'static str>> = OnceCell::new();
     INSTANCE.get_or_init(|| CURSES_FILE.lines().collect())

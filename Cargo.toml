@@ -14,13 +14,10 @@ categories = ["command-line-utilities"]
 
 [[bin]]
 name = "git-anger-management"
-path = "src/bin.rs"
+path = "src/bin/main.rs"
 
 [profile.release]
 lto = "thin"
-
-[features]
-fail-on-warnings = []
 
 [dependencies]
 structopt = "0.3.14"

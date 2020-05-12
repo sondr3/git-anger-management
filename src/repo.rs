@@ -1,5 +1,5 @@
 use crate::author::Author;
-use crate::{naughty_word, split_into_clean_words};
+use crate::core::{naughty_word, split_into_clean_words};
 use git2::{Commit, Repository};
 use prettytable::{format, Cell, Row, Table};
 use std::collections::HashMap;

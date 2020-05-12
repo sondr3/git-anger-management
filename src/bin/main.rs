@@ -1,6 +1,6 @@
 use console::Term;
 use git2::Repository;
-use git_anger_management::Repo;
+use git_anger_management::repo::Repo;
 use std::env;
 use std::error::Error;
 use std::path::PathBuf;

@@ -69,21 +69,9 @@
 //!
 //! Or look at the help by running `git anger-management -h`.
 #![doc(html_root_url = "https://docs.rs/git-anger-management/0.6.0")]
-#![cfg_attr(feature = "fail-on-warnings", deny(warnings))]
-#![forbid(unsafe_code)]
-#![deny(
-    clippy::all,
-    missing_docs,
-    missing_debug_implementations,
-    missing_copy_implementations,
-    trivial_casts,
-    unused_import_braces,
-    unused_allocation
-)]
-mod author;
-mod core;
-mod repo;
-
-pub use crate::author::Author;
-pub use crate::core::{naughty_word, split_into_clean_words};
-pub use crate::repo::Repo;
+/// A git author
+pub mod author;
+/// Core algorithms and functionality
+pub mod core;
+/// A simplified representation of a git repository
+pub mod repo;
