@@ -7,7 +7,7 @@ description = "Count your naughty words in git commit messages"
 repository = "https://github.com/sondr3/git-anger-management"
 documentation = "https://docs.rs/crate/git-anger-library/"
 homepage = "https://github.com/sondr3/git-anger-management"
-readme = "../README.md"
+readme = "README.md"
 license = "GPL-3.0-or-later"
 keywords = ["git", "useless", "fun", "anger-management"]
 
