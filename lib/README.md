@@ -13,7 +13,23 @@
 
 This is the main library that drives the
 [`git-anger-management`](https://crates.io/crates/git-anger-management)
-CLI-application, this is not really useful for anything besides that.
+CLI-application, this is not really useful for anything besides that... but if
+you for some reason want to, feel free!
+
+## Features:
+
+**Note:** None of these features are enabled by default, so you have to opt into
+it like so:
+
+```toml
+[dependencies]
+git-anger-library = { version = "0.8.0", features=["table", "json"] }
+```
+
+- `json`: Enables Serde serialization of the processed data using with the
+  `print_json()` method.
+- `table`: Enables pretty printing of the processed data using TabWriter with
+  the function `print_table()`.
 
 ## License
 

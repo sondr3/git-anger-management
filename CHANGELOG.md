@@ -1,3 +1,22 @@
+## v0.8.0 git-anger-lib
+
+> 2020-05-13
+
+Entirely a behind the scenes release, this is so that downstream users can properly use the features that they require:
+
+- `json`: Turns on Serde serialization of the repo data
+- `table`: Turns on printing a prettified table to `stdout`
+
+## Changes
+
+- [[`b05911cbd9`](https://github.com/sondr3/git-anger-management/commit/b05911cbd9)] - Release v0.8.0-lib
+- [[`8e4745f94b`](https://github.com/sondr3/git-anger-management/commit/8e4745f94b)] - Properly feature gate features
+- [[`f2ece8a634`](https://github.com/sondr3/git-anger-management/commit/f2ece8a634)] - Add READMEs for the individual workspace members
+- [[`5e8cf95e7a`](https://github.com/sondr3/git-anger-management/commit/5e8cf95e7a)] - Update CI, README for workspace
+- [[`a194a4d4d6`](https://github.com/sondr3/git-anger-management/commit/a194a4d4d6)] - Fix CI error
+- [[`2c58f3939f`](https://github.com/sondr3/git-anger-management/commit/2c58f3939f)] - Split into workspace
+- [[`c44b1a63bc`](https://github.com/sondr3/git-anger-management/commit/c44b1a63bc)] - Update changelog, installation instructions in README
+
 ## 0.7.0
 
 > 2020-05-12
