@@ -1,8 +1,10 @@
+#[cfg(feature = "json")]
 use serde::Serialize;
 use std::collections::HashMap;
 
 /// An author of a git commit.
-#[derive(Debug, Serialize)]
+#[derive(Debug)]
+#[cfg_attr(feature = "json", derive(Serialize))]
 pub struct Author {
     /// Name of the author.
     pub name: String,

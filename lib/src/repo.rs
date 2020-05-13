@@ -3,12 +3,15 @@ use crate::{
     core::{naughty_word, split_into_clean_words},
 };
 use git2::{Commit, Repository};
+#[cfg(feature = "json")]
 use serde::Serialize;
 use std::{collections::HashMap, env, error::Error, io, io::Write, path::Path};
+#[cfg(feature = "table")]
 use tabwriter::TabWriter;
 
 /// A simple representation of a git repository.
-#[derive(Debug, Serialize)]
+#[derive(Debug)]
+#[cfg_attr(feature = "json", derive(Serialize))]
 pub struct Repo {
     /// Name of the repository.
     pub name: String,
@@ -77,6 +80,7 @@ impl Repo {
     }
 
     /// Serialize the `Repo` struct into a JSON-object and print it.
+    #[cfg(feature = "json")]
     pub fn print_json(&self) -> Result<(), Box<dyn Error>> {
         let serialized = serde_json::to_string(&self)?;
         write!(io::stdout(), "{}", serialized)?;
@@ -86,6 +90,7 @@ impl Repo {
     }
 
     /// Build a table to display naughty authors and their words.
+    #[cfg(feature = "table")]
     pub fn print_list(&self) -> Result<(), Box<dyn Error>> {
         let mut tw = TabWriter::new(vec![]);
         let curses = Repo::sort(&self.curses);
@@ -108,6 +113,7 @@ impl Repo {
     }
 
     /// Create a sorted `Vec` from a HashMap of curses, sorted by counts
+    #[cfg(feature = "table")]
     fn sort(curses: &HashMap<String, usize>) -> Vec<(String, usize)> {
         let mut curses: Vec<(&String, &usize)> = curses.iter().collect();
         curses.sort_by(|(a, _), (b, _)| a.cmp(b));
@@ -119,6 +125,7 @@ impl Repo {
     }
 
     /// Add headers to a table
+    #[cfg(feature = "table")]
     fn table_headers(
         &self,
         tw: &mut TabWriter<Vec<u8>>,
@@ -140,6 +147,7 @@ impl Repo {
     }
 
     /// Add separators (`----`) to a table based on word lengths.
+    #[cfg(feature = "table")]
     fn table_separators(
         &self,
         tw: &mut TabWriter<Vec<u8>>,
@@ -160,6 +168,7 @@ impl Repo {
     }
 
     /// Add all the naughty authors to the table.
+    #[cfg(feature = "table")]
     fn table_authors(
         &self,
         tw: &mut TabWriter<Vec<u8>>,
@@ -191,6 +200,7 @@ impl Repo {
     }
 
     /// Sum up the total naughty count and print it.
+    #[cfg(feature = "table")]
     fn table_total(
         &self,
         tw: &mut TabWriter<Vec<u8>>,

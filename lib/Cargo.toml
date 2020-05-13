@@ -20,6 +20,6 @@ serde = { version = "1.0", features = ["derive"], optional = true }
 serde_json = { version = "1.0", optional = true }
 
 [features]
-default = ["json", "table"]
+default = []
 json = ["serde", "serde_json"]
 table = ["tabwriter"]
