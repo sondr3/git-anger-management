@@ -1,3 +1,15 @@
+## v0.8.1 git-anger-lib
+
+> 2020-05-13
+
+A patch release to update the documentation and make `docs.rs` build with all
+features enabled.
+
+## Changes
+
+- [[`fea9645fca`](https://github.com/sondr3/git-anger-management/commit/fea9645fca)] - Update metadata for docs.rs build, release v0.8.1
+- [[`b2fc2fcd58`](https://github.com/sondr3/git-anger-management/commit/b2fc2fcd58)] - Update README, CHANGELOG
+
 ## v0.8.0 git-anger-lib
 
 > 2020-05-13
