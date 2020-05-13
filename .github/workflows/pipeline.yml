@@ -128,7 +128,6 @@ jobs:
           override: true
       - run: cargo login $CRATES_IO_TOKEN
       - run: cargo publish --manifest-path bin/Cargo.toml
-          cargo publish --manifest-path lib/Cargo.toml
     env:
       CRATES_IO_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
 
@@ -144,8 +143,7 @@ jobs:
           toolchain: stable
           override: true
       - run: cargo login $CRATES_IO_TOKEN
-      - run: cargo publish --manifest-path bin/Cargo.toml
-          cargo publish --manifest-path lib/Cargo.toml
+      - run: cargo publish --manifest-path lib/Cargo.toml
     env:
       CRATES_IO_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
 

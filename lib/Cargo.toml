@@ -1,6 +1,6 @@
 [package]
 name = "git-anger-library"
-version = "0.7.0"
+version = "0.8.0"
 edition = "2018"
 authors = ["Sondre Nilsen <nilsen.sondre@gmail.com>"]
 description = "Count your naughty words in git commit messages"
