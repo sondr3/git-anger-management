@@ -133,7 +133,7 @@ impl Repo {
     ) -> Result<(), Box<dyn Error>> {
         let mut header = String::new();
         header.push_str("Author");
-        header.push_str("\t");
+        header.push('\t');
 
         curses
             .iter()

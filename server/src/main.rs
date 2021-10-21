@@ -1,7 +1,5 @@
 use dotenv::dotenv;
 use serde::Deserialize;
-use std::env;
-use warp::Filter;
 
 #[derive(Debug, Deserialize, Clone)]
 #[serde(default)]
@@ -33,7 +31,7 @@ async fn main() {
 
     let config: Config = match envy::prefixed("ANGER_").from_env() {
         Ok(config) => config,
-        Err(err) => panic!(err),
+        Err(err) => std::panic::panic_any(err),
     };
 
     let host = format!("{}:{}", config.domain, config.port);
