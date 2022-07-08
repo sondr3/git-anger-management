@@ -13,6 +13,6 @@ keywords = ["git", "useless", "fun", "anger-management"]
 categories = ["command-line-utilities"]
 
 [dependencies]
-structopt = "0.3.14"
-console = "0.11.2"
+structopt = "0.3.26"
+console = "0.15.0"
 git-anger-library = { path = "../lib", version = "0.8.0", features=["table", "json"] }
