@@ -1,154 +1,68 @@
 name: pipeline
 
-on:
-  pull_request:
-  push:
-    branches:
-      - master
-    tags:
-      - "v*.*.*"
+on: [push, pull_request]
 
 jobs:
-  formatting:
-    name: Formatting
+  check:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          components: rustfmt
-          override: true
-      - run: rustup component add rustfmt
-      - uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: --all -- --check
-
-  linting:
-    name: Lints
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        rust: [stable, nightly]
 
     steps:
-      - name: Checkout sources
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - name: Install ${{ matrix.rust }} toolchain
-        uses: actions-rs/toolchain@v1
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          profile: minimal
-          toolchain: stable
-          override: true
           components: rustfmt, clippy
 
-      - name: Run cargo fmt
-        uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: --all -- --check
+      - uses: Swatinem/rust-cache@v1
 
-      - name: Run cargo clippy
-        uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: -- -D warnings
+      - name: build
+        run: cargo test --no-run
 
-  check:
-    name: Check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout sources
-        uses: actions/checkout@v2
+      - name: test
+        run: cargo test -- --nocapture --quiet
 
-      - name: Install stable toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
+      - name: formatting
+        run: cargo fmt --all -- --check
 
-      - name: Run cargo check
-        uses: actions-rs/cargo@v1
-        with:
-          command: check
-          args: --workspace
+      - name: check
+        run: cargo check
 
-  # Run tests on Linux, macOS, and Windows
-  # On both Rust stable and Rust nightly
-  test:
-    name: Test Suite
-    needs: [check]
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macOS-latest, windows-latest]
-        rust: [stable, nightly]
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Cache cargo registry
-        uses: actions/cache@v1
-        with:
-          path: ~/.cargo/registry
-          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
-
-      - name: Cache cargo index
-        uses: actions/cache@v1
-        with:
-          path: ~/.cargo/git
-          key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
-
-      - name: Cache cargo build
-        uses: actions/cache@v1
-        with:
-          path: target
-          key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
-
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
+      - name: clippy
+        run: cargo clippy -- -D warnings
 
   publish_binary:
     if: startsWith(github.ref, 'refs/tags/v') && endsWith(github.ref, 'bin')
     name: Publish git-anger-management
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-      - run: cargo login $CRATES_IO_TOKEN
-      - run: cargo publish --manifest-path bin/Cargo.toml
     env:
       CRATES_IO_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v1
+
+      - run: cargo login $CRATES_IO_TOKEN
+      - run: cargo publish --manifest-path bin/Cargo.toml
 
   publish_library:
     if: startsWith(github.ref, 'refs/tags/v') && contains(github.ref, 'lib')
     name: Publish git-anger-library
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-      - run: cargo login $CRATES_IO_TOKEN
-      - run: cargo publish --manifest-path lib/Cargo.toml
     env:
       CRATES_IO_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
 
+    steps:
+      - uses: actions/checkout@v
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v1
+
+      - run: cargo login $CRATES_IO_TOKEN
+      - run: cargo publish --manifest-path lib/Cargo.toml
+
   github_build:
     if: startsWith(github.ref, 'refs/tags/v') && contains(github.ref, 'bin')
+    needs: check
     name: Build release binaries
     strategy:
       fail-fast: false
@@ -172,16 +86,14 @@ jobs:
             os: windows-latest
             name: git-anger-management-x86_64-pc-windows-msvc.zip
     runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v2
 
-      - name: Install Rust toolchain
-        uses: actions-rs/toolchain@v1
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          profile: minimal
-          toolchain: stable
-          override: true
           target: ${{ matrix.target }}
+      - uses: Swatinem/rust-cache@v1
 
       - name: Install musl tools
         if: matrix.target == 'x86_64-unknown-linux-musl'
@@ -189,66 +101,64 @@ jobs:
 
       - name: Build target
         if: matrix.target != 'x86_64-unknown-linux-musl'
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release --target ${{ matrix.target }}
+        run: cargo build --release --target ${{ matrix.target }}
 
       - name: Build target (musl)
         if: matrix.target == 'x86_64-unknown-linux-musl'
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release --target ${{ matrix.target }}
+        run: cargo build --release --target ${{ matrix.target }}
 
       - name: Prepare build artifacts [Windows]
         if: matrix.os == 'windows-latest'
         run: |
           cd target/${{ matrix.target }}/release
           strip git-anger-management.exe
-          7z a ../../../${{ matrix.name }} git-anger-management.exe
+          cp ../assets/* .
+          7z a ../../../${{ matrix.name }} git-anger-management.exe _git-anger-management git-anger-management.1 git-anger-management.bash git-anger-management.elv git-anger-management.fish _git-anger-management.ps1
           cd -
+
       - name: Prepare build artifacts [-nix]
         if: matrix.os != 'windows-latest'
         run: |
           cd target/${{ matrix.target }}/release
           strip git-anger-management
-          tar czvf ../../../${{ matrix.name }} git-anger-management
+          cp ../assets/* .
+          tar czvf ../../../${{ matrix.name }} git-anger-management _git-anger-management git-anger-management.1 git-anger-management.bash git-anger-management.elv git-anger-management.fish _git-anger-management.ps1
           cd -
+
       - name: Upload build artifact
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.name }}
           path: ${{ matrix.name }}
 
-  github_release_binary:
+  github_release:
     if: startsWith(github.ref, 'refs/tags/v') && contains(github.ref, 'bin')
     name: Create GitHub Release
     needs: github_build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Download Linux GNU artifact
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v3
         with:
           name: git-anger-management-x86_64-unknown-linux-gnu.tar.gz
           path: .
 
       - name: Download Linux MUSL artifact
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v3
         with:
           name: git-anger-management-x86_64-unknown-linux-musl.tar.gz
           path: .
 
       - name: Download Darwin artifact
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v3
         with:
           name: git-anger-management-x86_64-apple-darwin.tar.gz
           path: .
 
       - name: Download Windows artifact
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v3
         with:
           name: git-anger-management-x86_64-pc-windows-msvc.zip
           path: .
