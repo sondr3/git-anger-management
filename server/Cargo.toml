@@ -10,6 +10,6 @@ envy = "0.4.2"
 log = "0.4.17"
 pretty_env_logger = "0.4.0"
 serde = { version = "1.0.138", features = ["derive"] }
-tokio = { version = "1.19.2", features = ["full"] }
+tokio = { version = "1.20.3", features = ["full"] }
 uuid = "1.1.2"
 warp = "0.3.2"
