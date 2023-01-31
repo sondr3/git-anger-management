@@ -12,4 +12,4 @@ pretty_env_logger = "0.4.0"
 serde = { version = "1.0.138", features = ["derive"] }
 tokio = { version = "1.20.3", features = ["full"] }
 uuid = "1.1.2"
-warp = "0.3.2"
+warp = "0.3.3"
