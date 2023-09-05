@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
           fetch-depth: 0
@@ -42,7 +42,7 @@ jobs:
       CRATES_IO_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
 
     steps:
-      - uses: actions/checkout@v
+      - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
 
@@ -58,7 +58,7 @@ jobs:
       CRATES_IO_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
 
     steps:
-      - uses: actions/checkout@v
+      - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
 
@@ -93,7 +93,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: dtolnay/rust-toolchain@stable
         with:
@@ -142,7 +142,7 @@ jobs:
     needs: github_build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Download Linux GNU artifact
         uses: actions/download-artifact@v3
