@@ -172,7 +172,7 @@ jobs:
         run: ls -R
 
       - name: Create GitHub release ${{ matrix.target }}
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             git-anger-management-x86_64-apple-darwin.tar.gz
