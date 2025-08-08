@@ -1,7 +1,7 @@
 [package]
 name = "git-anger-management"
 version = "0.7.0"
-edition = "2018"
+edition = "2024"
 authors = ["Sondre Aasemoen <sondre@eons.io>"]
 description = "Count your naughty words in git commit messages"
 repository = "https://github.com/sondr3/git-anger-management"

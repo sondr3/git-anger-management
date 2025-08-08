@@ -1,7 +1,7 @@
 use std::path::Path;
 
-use git2::Repository;
 use git_anger_library::repo::Repo;
+use git2::Repository;
 
 #[test]
 fn test_commit_count() {

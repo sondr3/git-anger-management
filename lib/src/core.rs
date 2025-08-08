@@ -42,7 +42,9 @@ mod test {
     fn test_clean_word() {
         let words = split_into_clean_words("This! is a string: with, some. words in? it;");
         assert_eq!(
-            vec!["This", "is", "a", "string", "with", "some", "words", "in", "it"],
+            vec![
+                "This", "is", "a", "string", "with", "some", "words", "in", "it"
+            ],
             words.collect::<Vec<_>>()
         );
     }

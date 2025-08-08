@@ -4,6 +4,7 @@ members = [
     "lib",
     "server"
 ]
+resolver = "3"
 
 [profile.release]
 lto = "thin"
