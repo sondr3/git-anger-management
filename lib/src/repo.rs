@@ -1,12 +1,8 @@
 use std::{collections::HashMap, env, error::Error, path::Path};
-#[cfg(any(feature = "json", feature = "table"))]
-use std::{io, io::Write};
 
 use git2::{Commit, Repository};
-#[cfg(feature = "json")]
+#[cfg(feature = "serde")]
 use serde::Serialize;
-#[cfg(feature = "table")]
-use tabwriter::TabWriter;
 
 use crate::{
     author::Author,
@@ -15,7 +11,7 @@ use crate::{
 
 /// A simple representation of a git repository.
 #[derive(Debug)]
-#[cfg_attr(feature = "json", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(Serialize))]
 pub struct Repo {
     /// Name of the repository.
     pub name: String,
@@ -81,148 +77,6 @@ impl Repo {
     /// Count total naughty authors in repository.
     pub fn total_naughty_authors(&self) -> usize {
         self.authors.values().filter(|a| a.is_naughty()).count()
-    }
-
-    /// Serialize the `Repo` struct into a JSON-object and print it.
-    #[cfg(feature = "json")]
-    pub fn print_json(&self) -> Result<(), Box<dyn Error>> {
-        let serialized = serde_json::to_string(&self)?;
-        write!(io::stdout(), "{}", serialized)?;
-        io::stdout().flush()?;
-
-        Ok(())
-    }
-
-    /// Build a table to display naughty authors and their words.
-    #[cfg(feature = "table")]
-    pub fn print_list(&self) -> Result<(), Box<dyn Error>> {
-        let mut tw = TabWriter::new(vec![]);
-        let curses = Repo::sort(&self.curses);
-
-        self.table_headers(&mut tw, &curses)?;
-        self.table_separators(&mut tw, &curses)?;
-        self.table_authors(&mut tw, &curses)?;
-
-        if self.total_naughty_authors() > 1 {
-            self.table_separators(&mut tw, &curses)?;
-            self.table_total(&mut tw, &curses)?;
-        }
-
-        tw.flush()?;
-
-        write!(io::stdout(), "{}", String::from_utf8(tw.into_inner()?)?)?;
-        io::stdout().flush()?;
-
-        Ok(())
-    }
-
-    /// Create a sorted `Vec` from a HashMap of curses, sorted by counts
-    #[cfg(feature = "table")]
-    fn sort(curses: &HashMap<String, usize>) -> Vec<(String, usize)> {
-        let mut curses: Vec<(&String, &usize)> = curses.iter().collect();
-        curses.sort_by(|(a, _), (b, _)| a.cmp(b));
-        let curses: Vec<_> = curses
-            .iter()
-            .map(|(c, i)| ((*c).to_string(), **i))
-            .collect();
-        curses
-    }
-
-    /// Add headers to a table
-    #[cfg(feature = "table")]
-    fn table_headers(
-        &self,
-        tw: &mut TabWriter<Vec<u8>>,
-        curses: &[(String, usize)],
-    ) -> Result<(), Box<dyn Error>> {
-        let mut header = String::new();
-        header.push_str("Author");
-        header.push('\t');
-
-        curses
-            .iter()
-            .for_each(|(curse, _)| header.push_str(&[curse, "\t"].concat()));
-
-        header.push_str(&["Total", "\t"].concat());
-
-        writeln!(tw, "{}", header)?;
-
-        Ok(())
-    }
-
-    /// Add separators (`----`) to a table based on word lengths.
-    #[cfg(feature = "table")]
-    fn table_separators(
-        &self,
-        tw: &mut TabWriter<Vec<u8>>,
-        curses: &[(String, usize)],
-    ) -> Result<(), Box<dyn Error>> {
-        let mut sep = String::new();
-        sep.push_str(&[&"-".repeat("Author".len()), "\t"].concat());
-
-        curses
-            .iter()
-            .map(|(curse, _)| (curse, curse.len()))
-            .for_each(|(_, curse_len)| sep.push_str(&[&"-".repeat(curse_len), "\t"].concat()));
-
-        sep.push_str(&[&"-".repeat("Total".len()), "\t"].concat());
-
-        writeln!(tw, "{}", sep)?;
-        Ok(())
-    }
-
-    /// Add all the naughty authors to the table.
-    #[cfg(feature = "table")]
-    fn table_authors(
-        &self,
-        tw: &mut TabWriter<Vec<u8>>,
-        curses: &[(String, usize)],
-    ) -> Result<(), Box<dyn Error>> {
-        let mut authors: Vec<_> = self.authors.values().collect();
-        authors.sort_unstable_by_key(|a| &a.name);
-
-        for author in authors {
-            if author.is_naughty() {
-                let mut out = String::new();
-                out.push_str(&[&author.name, "\t"].concat());
-                // FIXME: use authors curses, not global curses
-
-                for (curse, _) in curses {
-                    if let Some(count) = author.curses.get(curse) {
-                        out.push_str(&[&count.to_string(), "\t"].concat());
-                    } else {
-                        out.push_str("0\t");
-                    }
-                }
-                out.push_str(&author.curses.values().sum::<usize>().to_string());
-
-                writeln!(tw, "{}", out)?;
-            }
-        }
-
-        Ok(())
-    }
-
-    /// Sum up the total naughty count and print it.
-    #[cfg(feature = "table")]
-    fn table_total(
-        &self,
-        tw: &mut TabWriter<Vec<u8>>,
-        curses: &[(String, usize)],
-    ) -> Result<(), Box<dyn Error>> {
-        let mut out = String::new();
-
-        out.push_str(&["Overall", "\t"].concat());
-
-        curses
-            .iter()
-            .for_each(|(_, count)| out.push_str(&[&count.to_string(), "\t"].concat()));
-
-        out.push_str(&self.total_curses.to_string());
-
-        writeln!(tw, "{}", out)?;
-
-        Ok(())
     }
 
     /// Build a list of commits by walking the history of a repository.

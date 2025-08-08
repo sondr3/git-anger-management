@@ -1,8 +1,12 @@
+mod output;
+
 use std::{env, error::Error, path::PathBuf, time::Instant};
 
 use console::Term;
 use git_anger_library::repo::Repo;
 use structopt::{StructOpt, clap::AppSettings};
+
+use crate::output::{print_json, print_table};
 
 #[derive(StructOpt, Debug)]
 #[structopt(
@@ -46,9 +50,9 @@ pub fn main() -> Result<(), Box<dyn Error>> {
     }
 
     if json {
-        repo.print_json()?;
+        print_json(&repo)?;
     } else {
-        repo.print_list()?;
+        print_table(&repo)?;
     }
 
     Ok(())

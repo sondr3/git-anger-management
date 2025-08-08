@@ -130,8 +130,6 @@ dependencies = [
  "git2",
  "phf",
  "serde",
- "serde_json",
- "tabwriter",
 ]
 
 [[package]]
@@ -140,7 +138,9 @@ version = "0.7.0"
 dependencies = [
  "console",
  "git-anger-library",
+ "serde_json",
  "structopt",
+ "tabwriter",
 ]
 
 [[package]]
