@@ -1,7 +1,7 @@
 [package]
 name = "git-anger-server"
 version = "0.0.0"
-authors = ["Sondre Nilsen <nilsen.sondre@gmail.com>"]
+authors = ["Sondre Aasemoen <sondre@eons.io>"]
 edition = "2018"
 
 [dependencies]

@@ -2,7 +2,7 @@
 name = "git-anger-management"
 version = "0.7.0"
 edition = "2018"
-authors = ["Sondre Nilsen <nilsen.sondre@gmail.com>"]
+authors = ["Sondre Aasemoen <sondre@eons.io>"]
 description = "Count your naughty words in git commit messages"
 repository = "https://github.com/sondr3/git-anger-management"
 documentation = "https://docs.rs/crate/git-anger-library/"
