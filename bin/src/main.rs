@@ -16,7 +16,7 @@ struct Cli {
     verbose: bool,
     #[structopt(short, long)]
     /// Only display information about repo
-    repo: bool,
+    _repo: bool,
     #[structopt(short, long)]
     /// Print output as JSON instead of a prettified table
     json: bool,

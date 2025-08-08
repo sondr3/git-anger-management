@@ -21,9 +21,9 @@
 //! ```
 //!
 //! - `json`: Enables Serde serialization of the processed data using with the
-//! `print_json()` method.
+//!   `print_json()` method.
 //! - `table`: Enables pretty printing of the processed data using TabWriter with
-//! the function `print_table()`.
+//!   the function `print_table()`.
 //!
 //! ## License
 //!

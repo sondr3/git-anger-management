@@ -224,7 +224,7 @@ impl Repo {
     }
 
     /// Build a list of commits by walking the history of a repository.
-    pub fn commits(repo: &Repository) -> Result<Vec<Commit>, Box<dyn Error>> {
+    pub fn commits(repo: &Repository) -> Result<Vec<Commit<'_>>, Box<dyn Error>> {
         let mut revwalk = repo.revwalk()?;
         let mut commits: Vec<Commit> = Vec::new();
         revwalk.push_head()?;
