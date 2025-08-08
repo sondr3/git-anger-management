@@ -1,5 +1,6 @@
-use once_cell::sync::OnceCell;
 use std::collections::HashSet;
+
+use once_cell::sync::OnceCell;
 
 /// Statically include the word list for curse words
 pub static CURSES_FILE: &str = include_str!("words.txt");

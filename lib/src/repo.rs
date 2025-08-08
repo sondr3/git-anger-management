@@ -1,13 +1,15 @@
+use std::{collections::HashMap, env, error::Error, io, io::Write, path::Path};
+
+use git2::{Commit, Repository};
+#[cfg(feature = "json")]
+use serde::Serialize;
+#[cfg(feature = "table")]
+use tabwriter::TabWriter;
+
 use crate::{
     author::Author,
     core::{naughty_word, split_into_clean_words},
 };
-use git2::{Commit, Repository};
-#[cfg(feature = "json")]
-use serde::Serialize;
-use std::{collections::HashMap, env, error::Error, io, io::Write, path::Path};
-#[cfg(feature = "table")]
-use tabwriter::TabWriter;
 
 /// A simple representation of a git repository.
 #[derive(Debug)]

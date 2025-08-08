@@ -1,6 +1,7 @@
+use std::collections::HashMap;
+
 #[cfg(feature = "json")]
 use serde::Serialize;
-use std::collections::HashMap;
 
 /// An author of a git commit.
 #[derive(Debug)]
