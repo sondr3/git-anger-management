@@ -12,8 +12,8 @@ license = "GPL-3.0-or-later"
 keywords = ["git", "useless", "fun", "anger-management"]
 
 [dependencies]
-git2 = { version = "0.14.4", default-features = false }
-serde = { version = "1.0.138", features = ["derive"], optional = true }
+git2 = { version = "0.20.2", default-features = false, features = ["vendored-libgit2"] }
+serde = { version = "1.0.219", features = ["derive"], optional = true }
 phf = { version = "0.12.1", features = ["macros"] }
 
 [features]
