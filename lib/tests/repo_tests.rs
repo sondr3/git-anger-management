@@ -16,10 +16,10 @@ fn test_example_repo() {
 
     assert_eq!(repo.authors.len(), 3);
     assert_eq!(repo.total_commits, 5);
-    assert_eq!(repo.total_curses, 7);
+    assert_eq!(repo.total_curses, 9);
 
     let john = repo.authors.get("John Doe").unwrap();
-    assert_eq!(john.total_curses, 2);
+    assert_eq!(john.total_curses, 4);
     assert_eq!(john.total_commits, 1);
     assert_eq!(john.curses.get("bloody").unwrap(), &1);
     assert_eq!(john.curses.get("damn").unwrap(), &1);

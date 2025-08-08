@@ -1,4 +1,6 @@
-use std::{collections::HashMap, env, error::Error, io, io::Write, path::Path};
+use std::{collections::HashMap, env, error::Error, path::Path};
+#[cfg(any(feature = "json", feature = "table"))]
+use std::{io, io::Write};
 
 use git2::{Commit, Repository};
 #[cfg(feature = "json")]
@@ -77,7 +79,7 @@ impl Repo {
     }
 
     /// Count total naughty authors in repository.
-    fn total_naughty_authors(&self) -> usize {
+    pub fn total_naughty_authors(&self) -> usize {
         self.authors.values().filter(|a| a.is_naughty()).count()
     }
 

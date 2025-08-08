@@ -1,14 +1,4 @@
-use std::collections::HashSet;
-
-use once_cell::sync::OnceCell;
-
-/// Statically include the word list for curse words
-pub static CURSES_FILE: &str = include_str!("words.txt");
-
-fn curses() -> &'static HashSet<&'static str> {
-    static INSTANCE: OnceCell<HashSet<&'static str>> = OnceCell::new();
-    INSTANCE.get_or_init(|| CURSES_FILE.lines().map(|l| l.trim()).collect())
-}
+use crate::words::CURSES_SET;
 
 /// Cleans a string and returns a list containing the cleaned up words.
 ///
@@ -23,7 +13,7 @@ pub fn split_into_clean_words(input: &str) -> impl Iterator<Item = &str> {
 
 /// Checks if a word is naughty.
 pub fn naughty_word(word: &str) -> bool {
-    curses().contains(&word)
+    CURSES_SET.contains(word)
 }
 
 #[cfg(test)]

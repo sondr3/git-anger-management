@@ -35,3 +35,4 @@ pub mod author;
 pub mod core;
 /// A simplified representation of a git repository
 pub mod repo;
+mod words;
