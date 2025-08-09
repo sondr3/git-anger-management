@@ -124,28 +124,17 @@ dependencies = [
 ]
 
 [[package]]
-name = "git-anger-library"
-version = "0.8.1"
-dependencies = [
- "git2",
- "phf",
- "serde",
-]
-
-[[package]]
 name = "git-anger-management"
 version = "0.7.0"
 dependencies = [
  "console",
- "git-anger-library",
+ "git2",
+ "phf",
+ "serde",
  "serde_json",
  "structopt",
  "tabwriter",
 ]
-
-[[package]]
-name = "git-anger-server"
-version = "0.0.0"
 
 [[package]]
 name = "git2"

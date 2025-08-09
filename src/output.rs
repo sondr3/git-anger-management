@@ -1,6 +1,6 @@
 use std::{collections::HashMap, error::Error, io, io::Write};
 
-use git_anger_library::repo::Repo;
+use git_anger_management::repo::Repo;
 use tabwriter::TabWriter;
 
 /// Serialize the `Repo` struct into a JSON-object and print it.

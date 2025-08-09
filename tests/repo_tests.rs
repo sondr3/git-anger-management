@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use git_anger_library::repo::Repo;
+use git_anger_management::repo::Repo;
 use git2::Repository;
 
 #[test]

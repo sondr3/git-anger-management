@@ -4,8 +4,6 @@
    <br />
    <a href="https://crates.io/crates/git-anger-management"><img alt="Crates.io" src="https://img.shields.io/crates/v/git-anger-management?label=binary"></a>
    <a href="https://docs.rs/crate/git-anger-management/"><img alt="Binary documentation" src="https://docs.rs/git-anger-management/badge.svg"></a>
-   <a href="https://crates.io/crates/git-anger-library"><img alt="Crates.io" src="https://img.shields.io/crates/v/git-anger-library?label=library"></a>
-   <a href="https://docs.rs/crate/git-anger-library/"><img alt="Library documentation" src="https://docs.rs/git-anger-library/badge.svg"></a>
 </p>
 
 <p align="center">

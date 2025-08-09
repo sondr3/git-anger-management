@@ -1,7 +1,6 @@
 use std::{collections::HashMap, env, error::Error, path::Path};
 
 use git2::{Commit, Repository};
-#[cfg(feature = "serde")]
 use serde::Serialize;
 
 use crate::{
@@ -10,8 +9,7 @@ use crate::{
 };
 
 /// A simple representation of a git repository.
-#[derive(Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[derive(Debug, Serialize)]
 pub struct Repo {
     /// Name of the repository.
     pub name: String,
